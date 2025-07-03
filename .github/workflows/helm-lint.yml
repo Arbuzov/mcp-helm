@@ -3,8 +3,10 @@ name: Helm Chart Lint
 on:
   pull_request:
     paths:
-      - '**/*.yaml'
-      - '**/*.yml'
+      - 'charts/**'
+      - 'Chart.yaml'
+      - 'values.yaml'
+      - 'templates/**'
       - '.github/workflows/**'
 
 jobs:
@@ -23,6 +25,9 @@ jobs:
 
       - name: Run yamllint
         run: yamllint .
+
+      - name: Update chart dependencies
+        run: helm dependency update
 
       - name: Run helm lint
         run: helm lint .
