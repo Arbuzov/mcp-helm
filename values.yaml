@@ -102,5 +102,6 @@ envSecrets: {}
 #   data:
 #     JIRA_API_TOKEN: your_jira_token
 #     CONFLUENCE_API_TOKEN: your_conf_token
+# Keys must be valid Kubernetes secret keys (RFC 1123) and values cannot be empty.
 secretEnv: {}
 
