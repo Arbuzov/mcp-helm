@@ -80,3 +80,27 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Additional environment variables to pass to the container.
+# Example:
+# env:
+#   JIRA_URL: https://your-company.atlassian.net
+env: {}
+
+# Environment variables sourced from existing Kubernetes secrets.
+# Example:
+# envSecrets:
+#   JIRA_API_TOKEN:
+#     name: mcp-atlassian-secret
+#     key: jiraApiToken
+envSecrets: {}
+
+# Create a Kubernetes secret from the following data and expose the keys as environment variables.
+# Example:
+# secretEnv:
+#   name: mcp-atlassian-env
+#   data:
+#     JIRA_API_TOKEN: your_jira_token
+#     CONFLUENCE_API_TOKEN: your_conf_token
+secretEnv: {}
+

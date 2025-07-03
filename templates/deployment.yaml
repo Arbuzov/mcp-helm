@@ -33,6 +33,29 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if or .Values.env .Values.envSecrets .Values.secretEnv.data }}
+          env:
+            {{- range $key, $val := .Values.env }}
+            - name: {{ $key }}
+              value: {{ quote $val }}
+            {{- end }}
+            {{- if .Values.secretEnv.data }}
+            {{- range $key, $val := .Values.secretEnv.data }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (printf "%s-env" (include "mcp-atlassian-helm.fullname" $)) .Values.secretEnv.name }}
+                  key: {{ $key }}
+            {{- end }}
+            {{- end }}
+            {{- range $key, $secret := .Values.envSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secret.name }}
+                  key: {{ $secret.key }}
+            {{- end }}
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
