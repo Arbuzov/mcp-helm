@@ -1,0 +1,29 @@
+name: Helm Chart Lint
+
+on:
+  pull_request:
+    paths:
+      - '**/*.yaml'
+      - '**/*.yml'
+      - '.github/workflows/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.13.1
+
+      - name: Install yamllint
+        run: sudo apt-get update && sudo apt-get install -y yamllint
+
+      - name: Run yamllint
+        run: yamllint .
+
+      - name: Run helm lint
+        run: helm lint .
+
