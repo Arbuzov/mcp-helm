@@ -4,9 +4,6 @@ on:
   pull_request:
     paths:
       - 'charts/**'
-      - 'Chart.yaml'
-      - 'values.yaml'
-      - 'templates/**'
       - '.github/workflows/**'
 
 jobs:
@@ -26,8 +23,9 @@ jobs:
       - name: Run yamllint
         run: yamllint .
 
-      - name: Update chart dependencies
-        run: helm dependency update
-
-      - name: Run helm lint
-        run: helm lint .
+      - name: Lint all charts
+        run: |
+          for chart in charts/*; do
+            helm dependency update "$chart" || true
+            helm lint "$chart"
+          done
