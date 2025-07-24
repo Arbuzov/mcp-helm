@@ -23,9 +23,33 @@ jobs:
       - name: Run yamllint
         run: yamllint .
 
+      - name: Install markdownlint
+        run: |
+          npm install -g markdownlint-cli
+
+      - name: Lint Markdown files
+        run: markdownlint '**/*.md'
+
       - name: Lint all charts
         run: |
           for chart in charts/*; do
             helm dependency update "$chart" || true
             helm lint "$chart"
           done
+
+      - name: Install kubeval
+        run: |
+          curl -L https://github.com/instrumenta/kubeval/releases/download/v0.16.1/kubeval-linux-amd64.tar.gz -o kubeval.tar.gz
+          tar xzf kubeval.tar.gz
+          sudo install -o root -g root -m 0755 kubeval /usr/local/bin/kubeval
+
+      - name: Render and validate charts
+        run: |
+          for chart in charts/*; do
+            helm template "$chart" | kubeval - --ignore-missing-schemas
+          done
+
+      - name: Check Artifact Hub readiness
+        run: |
+          sudo apt-get update && sudo apt-get install -y yq
+          ./scripts/check-artifacthub.sh
