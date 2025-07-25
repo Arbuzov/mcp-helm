@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Node.js for markdownlint
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
-    && npm install -g markdownlint-cli \
+    && npm install -g markdownlint-cli@0.39.0 \
     && rm -rf /var/lib/apt/lists/*
 
 ARG KUBEVAL_VERSION=v0.16.1
@@ -29,4 +29,6 @@ ARG YQ_VERSION=4.43.1
 RUN curl -sL https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 -o /usr/local/bin/yq \
     && chmod +x /usr/local/bin/yq
 
+RUN useradd -ms /bin/bash devuser
+USER devuser
 CMD ["bash"]
