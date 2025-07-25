@@ -1,0 +1,9 @@
+apiVersion: v2
+name: mcp-library
+description: Common helper templates for MCP charts
+license: MIT
+maintainers:
+  - name: Open WebUI
+type: library
+version: 0.1.0
+appVersion: "1.0"
