@@ -1,0 +1,19 @@
+{
+    "name": "Helm Charts Dev Container",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-kubernetes-tools.vscode-kubernetes-tools",
+                "redhat.vscode-yaml",
+                "DavidAnson.vscode-markdownlint"
+            ]
+        }
+    },
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "postCreateCommand": "helm version && yamllint --version && markdownlint --version && kubeval --version && yq --version"
+}
