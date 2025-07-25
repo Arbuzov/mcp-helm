@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD013 -->
 # Docker MCP Helm Chart
 
 This Helm chart deploys the Docker MCP server based on the `mcp/docker` Docker image to a Kubernetes cluster.
@@ -90,7 +91,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | `autoscaling.targetMemoryUtilizationPercentage` | Target Memory utilization percentage                                                                                 | `""`    |
 
 ## Configuration and installation details
-
 
 ### Exposing the application
 
