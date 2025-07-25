@@ -1,6 +1,9 @@
 apiVersion: v2
 name: mcp-home-assistant-helm
 description: A Helm chart for deploying Home Assistant MCP server
+license: MIT
+maintainers:
+  - name: Open WebUI
 
 # A chart can be either an 'application' or a 'library' chart.
 #

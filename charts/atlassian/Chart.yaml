@@ -1,6 +1,9 @@
 apiVersion: v2
 name: mcp-atlassian-helm
 description: A Helm chart for Kubernetes
+license: MIT
+maintainers:
+  - name: Open WebUI
 
 # A chart can be either an 'application' or a 'library' chart.
 #
