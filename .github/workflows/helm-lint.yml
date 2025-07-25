@@ -49,7 +49,11 @@ jobs:
             helm template "$chart" | kubeval - --ignore-missing-schemas
           done
 
-      - name: Check Artifact Hub readiness
+      - name: Install yq
         run: |
-          sudo apt-get update && sudo apt-get install -y yq
-          ./scripts/check-artifacthub.sh
+          YQ_VERSION=4.43.1
+          curl -L https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 -o yq
+          sudo install -o root -g root -m 0755 yq /usr/local/bin/yq
+
+      - name: Check Artifact Hub readiness
+        run: ./scripts/check-artifacthub.sh
