@@ -41,4 +41,3 @@ A Helm chart for Kubernetes
 | env | object | `{}` | Extra environment variables |
 | envSecrets | object | `{}` | Environment variables from secrets |
 | secretEnv | object | `{}` | Create secret with environment data; keys must be valid secret keys and values cannot be empty |
-
