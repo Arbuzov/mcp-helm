@@ -91,7 +91,6 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration and installation details
 
-
 ### Exposing the application
 
 To access the MCP server from outside the cluster, you can:
