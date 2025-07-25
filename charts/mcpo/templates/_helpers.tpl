@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "mcp-kubernetes-helm.name" -}}
+{{- define "mcp-mcpo-helm.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "mcp-kubernetes-helm.fullname" -}}
+{{- define "mcp-mcpo-helm.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "mcp-kubernetes-helm.chart" -}}
+{{- define "mcp-mcpo-helm.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "mcp-kubernetes-helm.labels" -}}
-helm.sh/chart: {{ include "mcp-kubernetes-helm.chart" . }}
-{{ include "mcp-kubernetes-helm.selectorLabels" . }}
+{{- define "mcp-mcpo-helm.labels" -}}
+helm.sh/chart: {{ include "mcp-mcpo-helm.chart" . }}
+{{ include "mcp-mcpo-helm.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "mcp-kubernetes-helm.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "mcp-kubernetes-helm.name" . }}
+{{- define "mcp-mcpo-helm.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "mcp-mcpo-helm.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "mcp-kubernetes-helm.serviceAccountName" -}}
+{{- define "mcp-mcpo-helm.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "mcp-kubernetes-helm.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "mcp-mcpo-helm.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

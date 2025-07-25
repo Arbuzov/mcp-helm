@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "mcp-kubernetes-helm.fullname" . }}
+  name: {{ include "mcp-mcpo-helm.fullname" . }}
   labels:
-    {{- include "mcp-kubernetes-helm.labels" . | nindent 4 }}
+    {{- include "mcp-mcpo-helm.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "mcp-kubernetes-helm.selectorLabels" . | nindent 6 }}
+      {{- include "mcp-mcpo-helm.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,20 +18,20 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "mcp-kubernetes-helm.selectorLabels" . | nindent 8 }}
+        {{- include "mcp-mcpo-helm.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "mcp-kubernetes-helm.serviceAccountName" . }}
+      serviceAccountName: {{ include "mcp-mcpo-helm.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ or .Values.image.tag .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if or .Values.env .Values.envSecrets .Values.secretEnv.data }}
           env:
@@ -51,7 +51,7 @@ spec:
             - name: {{ $key }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "mcp-kubernetes-helm.fullname" $ }}
+                  name: {{ include "mcp-mcpo-helm.fullname" $ }}
                   key: {{ $key }}
             {{- end }}
             {{- end }}
