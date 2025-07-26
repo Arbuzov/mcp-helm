@@ -4,6 +4,7 @@ set -euo pipefail
 base=${1:-HEAD~1}
 head=${2:-HEAD}
 
+
 changed_files=$(git diff --name-only "$base" "$head")
 
 charts_changed=()
@@ -16,6 +17,21 @@ while IFS= read -r file; do
   fi
 done <<< "$changed_files"
 
+# output list of changed charts for GitHub Actions matrix
+if [[ ${#charts_changed[@]} -gt 0 ]]; then
+  jq -n --argjson chart "$(printf '%s\n' "${charts_changed[@]}" | jq -R . | jq -s .)" '{chart:$chart}'
+else
+  jq -n '{chart:[]}'
+fi > /tmp/changed_charts.json
+
+charts_json=$(cat /tmp/changed_charts.json)
+echo "matrix=$charts_json" >> "$GITHUB_OUTPUT"
+
+if [[ ${#charts_changed[@]} -gt 0 ]]; then
+  echo "changed=true" >> "$GITHUB_OUTPUT"
+else
+  echo "changed=false" >> "$GITHUB_OUTPUT"
+fi
 for chart in "${charts_changed[@]:-}"; do
   chart_yaml="charts/$chart/Chart.yaml"
   if [[ -f "$chart_yaml" ]]; then

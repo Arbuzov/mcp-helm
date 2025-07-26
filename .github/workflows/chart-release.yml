@@ -13,9 +13,11 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  prepare:
     if: "!contains(github.event.head_commit.message, '[skip release]')"
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.bump.outputs.matrix }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,15 +29,10 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: Bump chart patch versions
+      - name: Detect changed charts and bump patch versions
         id: bump
         run: |
           ./scripts/bump-chart-patch.sh ${{ github.event.before }} ${{ github.sha }}
-          if git diff --quiet; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
 
       - name: Commit version bumps
         if: steps.bump.outputs.changed == 'true'
@@ -43,6 +40,19 @@ jobs:
           git add charts/**/Chart.yaml
           git commit -m "Bump chart patch versions [skip release]"
           git push origin HEAD:${{ github.ref }}
+
+  release:
+    needs: prepare
+    if: ${{ fromJson(needs.prepare.outputs.matrix).chart != [] }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Add MCP chart repository
         run: |
@@ -52,7 +62,7 @@ jobs:
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
         with:
-          charts_dir: charts
+          charts_dir: charts/${{ matrix.chart }}
           pages_branch: gh-pages
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}

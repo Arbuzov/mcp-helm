@@ -37,10 +37,12 @@ jobs:
 
       - name: Lint all charts
         run: |
+          status=0
           for chart in charts/*; do
             helm dependency update "$chart" || true
-            helm lint "$chart"
+            helm lint "$chart" || status=1
           done
+          exit $status
 
       - name: Install kubeval
         run: |
@@ -50,9 +52,11 @@ jobs:
 
       - name: Render and validate charts
         run: |
+          status=0
           for chart in charts/*; do
-            helm template "$chart" | kubeval - --ignore-missing-schemas
+            helm template "$chart" | kubeval - --ignore-missing-schemas || status=1
           done
+          exit $status
 
       - name: Install yq
         run: |
