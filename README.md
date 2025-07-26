@@ -15,3 +15,13 @@ This repository contains Helm charts used by the MCP project. All charts are sto
 ## Development container
 
 A [Dev Container](https://containers.dev/) configuration is provided in the `.devcontainer` directory. It includes Helm and related tools to lint and test the charts locally.
+
+## Using the chart repository
+
+When working with charts that depend on the `mcp-library` chart, add this repository so Helm can resolve the dependency:
+
+```bash
+helm repo add mcp https://arbuzov.github.io/mcp-helm/
+```
+
+After adding the repository, run `helm dependency update` inside the chart directory to fetch the required dependencies.
