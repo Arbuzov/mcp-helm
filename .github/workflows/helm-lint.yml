@@ -18,7 +18,9 @@ jobs:
           version: v3.13.1
 
       - name: Add MCP chart repository
-        run: helm repo add mcp https://arbuzov.github.io/mcp-helm/
+        run: |
+          helm repo add mcp https://arbuzov.github.io/mcp-helm/
+          helm repo update
 
       - name: Install yamllint
         run: sudo apt-get update && sudo apt-get install -y yamllint
