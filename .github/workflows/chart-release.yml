@@ -14,6 +14,7 @@ permissions:
 
 jobs:
   release:
+    if: "!contains(github.event.head_commit.message, '[skip release]')"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,6 +26,23 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Bump chart patch versions
+        id: bump
+        run: |
+          ./scripts/bump-chart-patch.sh ${{ github.event.before }} ${{ github.sha }}
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit version bumps
+        if: steps.bump.outputs.changed == 'true'
+        run: |
+          git add charts/**/Chart.yaml
+          git commit -m "Bump chart patch versions [skip release]"
+          git push origin HEAD:${{ github.ref }}
 
       - name: Add MCP chart repository
         run: |
