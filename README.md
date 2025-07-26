@@ -22,6 +22,7 @@ When working with charts that depend on the `mcp-library` chart, add this reposi
 
 ```bash
 helm repo add mcp https://arbuzov.github.io/mcp-helm/
+helm repo update
 ```
 
 After adding the repository, run `helm dependency update` inside the chart directory to fetch the required dependencies.
