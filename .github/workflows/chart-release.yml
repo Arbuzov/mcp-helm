@@ -52,6 +52,9 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+      - name: Wipe mcp-library
+        run: rm -rf charts/mcp-library
+
       - name: Add MCP chart repository
         run: |
           helm repo add mcp https://arbuzov.github.io/mcp-helm/
