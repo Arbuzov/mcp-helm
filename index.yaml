@@ -234,6 +234,18 @@ entries:
   mcp-library:
   - apiVersion: v2
     appVersion: "1.0"
+    created: "2025-07-27T21:08:16.570405933Z"
+    description: Common helper templates for MCP charts
+    digest: c1863c494f8a0a71b72813b7b510e27daa26ee2a3fd1fcf36b6c5eff68a20f76
+    maintainers:
+    - name: Open WebUI
+    name: mcp-library
+    type: library
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-library-0.1.4/mcp-library-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: "1.0"
     created: "2025-07-27T17:15:27.070561161Z"
     description: Common helper templates for MCP charts
     digest: 9725cb3f29fb45f8165f3d6c307a51ae529929c425e5648c2394043cef132558
@@ -372,4 +384,4 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/mcpo-0.1.1/mcpo-0.1.1.tgz
     version: 0.1.1
-generated: "2025-07-27T20:58:03.044085735Z"
+generated: "2025-07-27T21:08:16.570487415Z"
