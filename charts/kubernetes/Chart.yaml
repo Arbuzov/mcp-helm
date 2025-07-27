@@ -1,9 +1,6 @@
 apiVersion: v2
-name: mcp-kubernetes-helm
+name: mcp-kubernetes
 description: A Helm chart for deploying the MCP server
-license: MIT
-maintainers:
-  - name: Open WebUI
 
 # A chart can be either an 'application' or a 'library' chart.
 #
