@@ -3,6 +3,20 @@ entries:
   mcp-atlassian:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-07-27T21:27:50.798448247Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for Kubernetes
+    digest: 0292896863de469ff4d5175ba10a532198c5ff7eeb4076e76dae583c4e89c530
+    name: mcp-atlassian
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-atlassian-0.2.4/mcp-atlassian-0.2.4.tgz
+    version: 0.2.4
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2025-07-27T21:21:28.78965343Z"
     dependencies:
     - name: mcp-library
@@ -91,6 +105,20 @@ entries:
   mcp-docker:
   - apiVersion: v2
     appVersion: latest
+    created: "2025-07-27T21:27:50.937585715Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying Docker MCP server
+    digest: 54e062497b51635f8f2f7a8a6a9ea6ce7d18e06cbcfe665a13eee12660a3e75c
+    name: mcp-docker
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-docker-0.2.4/mcp-docker-0.2.4.tgz
+    version: 0.2.4
+  - apiVersion: v2
+    appVersion: latest
     created: "2025-07-27T21:21:28.894736015Z"
     dependencies:
     - name: mcp-library
@@ -177,6 +205,20 @@ entries:
     - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-docker-helm-0.1.1/mcp-docker-helm-0.1.1.tgz
     version: 0.1.1
   mcp-gitlab:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2025-07-27T21:27:51.071539296Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying GitLab MCP server
+    digest: 0fe8e5ed2a2e9b2d09013277630fefab1cbfb1c16eb7f0ef026372e8baecac62
+    name: mcp-gitlab
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-gitlab-0.2.4/mcp-gitlab-0.2.4.tgz
+    version: 0.2.4
   - apiVersion: v2
     appVersion: latest
     created: "2025-07-27T21:21:29.028215481Z"
@@ -268,6 +310,20 @@ entries:
   mcp-home-assistant:
   - apiVersion: v2
     appVersion: latest
+    created: "2025-07-27T21:27:51.270265473Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying Home Assistant MCP server
+    digest: fb8be0ca86e80f32d75f833f8775207cae91196ea8b3b6939f090ac0801d2a14
+    name: mcp-home-assistant
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-home-assistant-0.2.4/mcp-home-assistant-0.2.4.tgz
+    version: 0.2.4
+  - apiVersion: v2
+    appVersion: latest
     created: "2025-07-27T21:21:29.174339341Z"
     dependencies:
     - name: mcp-library
@@ -354,6 +410,20 @@ entries:
     - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-home-assistant-helm-0.1.1/mcp-home-assistant-helm-0.1.1.tgz
     version: 0.1.1
   mcp-kubernetes:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2025-07-27T21:27:51.40141777Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying the MCP server
+    digest: 0d1080a18fa171a7b4f1dcf5a6f474968b5cc59152193f3948a4a53bac547627
+    name: mcp-kubernetes
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-kubernetes-0.2.4/mcp-kubernetes-0.2.4.tgz
+    version: 0.2.4
   - apiVersion: v2
     appVersion: latest
     created: "2025-07-27T21:21:29.300095588Z"
@@ -498,6 +568,20 @@ entries:
   mcpo:
   - apiVersion: v2
     appVersion: main
+    created: "2025-07-27T21:27:51.548744673Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying the mcpo proxy server
+    digest: b649398c17d01416a6e72e4532751de7f72b7b35e2601917b4936de236510f27
+    name: mcpo
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcpo-0.2.4/mcpo-0.2.4.tgz
+    version: 0.2.4
+  - apiVersion: v2
+    appVersion: main
     created: "2025-07-27T21:21:29.390007004Z"
     dependencies:
     - name: mcp-library
@@ -636,4 +720,4 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/mcpo-0.1.1/mcpo-0.1.1.tgz
     version: 0.1.1
-generated: "2025-07-27T21:21:29.390137257Z"
+generated: "2025-07-27T21:27:51.548885643Z"
