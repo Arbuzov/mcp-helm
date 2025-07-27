@@ -38,6 +38,9 @@ spec:
             - "/opt/mcpo/config.json"
             - "--port"
             - "{{ default 8000 .Values.service.port }}"
+            {{- if ne .Values.ingress.path "/" }}
+            - "--path-prefix={{ .Values.ingress.path }}"
+            {{- end }}
           {{- if or .Values.env .Values.envSecrets .Values.secretEnv.data }}
           env:
             {{- range $key, $val := .Values.env }}

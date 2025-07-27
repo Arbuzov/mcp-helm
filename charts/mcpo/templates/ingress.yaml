@@ -35,14 +35,17 @@ spec:
     {{- end }}
   {{- end }}
   rules:
+    {{- $ingressPath := "/" }}
+    {{- if ne .Values.ingress.path "/" }}
+    {{- $ingressPath = printf "%s(/|$)(.*)" .Values.ingress.path }}
+    {{- end }}
     {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    - host: {{ if eq . "*" }}""{{ else }}{{ . | quote }}{{ end }}
       http:
         paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.Version) }}
-            pathType: {{ .pathType }}
+          - path: {{ $ingressPath }}
+            {{- if and $.Values.ingress.pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.Version) }}
+            pathType: {{ $.Values.ingress.pathType }}
             {{- end }}
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.Version }}
@@ -54,6 +57,5 @@ spec:
               serviceName: {{ $fullName }}
               servicePort: {{ $svcPort }}
               {{- end }}
-          {{- end }}
     {{- end }}
 {{- end }}

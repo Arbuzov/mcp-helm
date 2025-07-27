@@ -47,11 +47,10 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  path: /
+  pathType: Prefix
   hosts:
-    - host: hass-mcp.local
-      paths:
-        - path: /
-          pathType: Prefix
+    - hass-mcp.local
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

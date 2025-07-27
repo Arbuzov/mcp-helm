@@ -68,7 +68,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ingress.enabled`     | Enable ingress record generation for mcpo                | `false` |
 | `ingress.className`   | IngressClass that will be used to implement the Ingress   | `""`    |
 | `ingress.annotations` | Additional annotations for the Ingress resource          | `{}`    |
-| `ingress.hosts`       | An array with hosts and paths                             | `[{host: "mcpo.local", paths: [{path: "/", pathType: "Prefix"}]}]` |
+| `ingress.path` | Base path for the service | `/` |
+| `ingress.pathType` | Path matching behavior | `Prefix` |
+| `ingress.hosts` | List of hostnames | `["mcpo.local"]` |
 | `ingress.tls`         | TLS configuration for ingress                             | `[]`    |
 
 ### Environment variables
@@ -133,11 +135,9 @@ To access the mcpo server from outside the cluster, you can:
    ingress:
      enabled: true
      className: "nginx"
+     path: /
      hosts:
-       - host: mcpo.your-domain.com
-         paths:
-           - path: /
-             pathType: Prefix
+       - mcpo.your-domain.com
    ```
 
 3. **Use LoadBalancer service type**:
