@@ -3,6 +3,34 @@
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+{{/* Render a structure as YAML with template interpolation */}}
+{{- define "mcp-library.tplvalues.render" -}}
+{{- $root := index . 0 -}}
+{{- $vals := index . 1 -}}
+{{- tpl (toYaml $vals) $root }}
+{{- end }}
+
+{{/* Extra volumes for pod spec */}}
+{{- define "mcp-library.extraVolumes" -}}
+{{- if .Values.extraVolumes }}
+{{- include "mcp-library.tplvalues.render" (list . .Values.extraVolumes) }}
+{{- end }}
+{{- end }}
+
+{{/* Extra volume mounts for containers */}}
+{{- define "mcp-library.extraVolumeMounts" -}}
+{{- if .Values.extraVolumeMounts }}
+{{- include "mcp-library.tplvalues.render" (list . .Values.extraVolumeMounts) }}
+{{- end }}
+{{- end }}
+
+{{/* Extra environment variables for containers */}}
+{{- define "mcp-library.extraEnvs" -}}
+{{- if .Values.extraEnvs }}
+{{- include "mcp-library.tplvalues.render" (list . .Values.extraEnvs) }}
+{{- end }}
+{{- end }}
+
 {{/* Create a default fully qualified app name. */}}
 {{- define "mcp-library.fullname" -}}
 {{- if .Values.fullnameOverride }}
