@@ -13,35 +13,7 @@ permissions:
   contents: write
 
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.bump.outputs.matrix }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-      - name: Detect changed charts and bump patch versions
-        id: bump
-        run: |
-          ./scripts/bump-chart-patch.sh ${{ github.event.before }} ${{ github.sha }}
-
-      - name: Commit version bumps
-        if: steps.bump.outputs.changed == 'true'
-        run: |
-          git add charts/**/Chart.yaml
-          git commit -m "Bump chart patch versions [skip release]"
-          git push origin HEAD:${{ github.ref }}
-
   release:
-    needs: prepare
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
