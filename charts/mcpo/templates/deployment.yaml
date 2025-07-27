@@ -36,6 +36,8 @@ spec:
           args:
             - "--config"
             - "/opt/mcpo/config.json"
+            - "--port"
+            - "{{ default 8000 .Values.service.port }}"
           {{- if or .Values.env .Values.envSecrets .Values.secretEnv.data }}
           env:
             {{- range $key, $val := .Values.env }}

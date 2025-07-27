@@ -59,7 +59,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Name           | Description             | Value       |
 | -------------- | ----------------------- | ----------- |
 | `service.type` | mcpo service type       | `ClusterIP` |
-| `service.port` | mcpo service HTTP port  | `8080`      |
+| `service.port` | mcpo service HTTP port  | `8000`      |
 
 ### Ingress parameters
 
@@ -124,7 +124,7 @@ To access the mcpo server from outside the cluster, you can:
 1. **Use port forwarding** (for development):
 
    ```bash
-   kubectl port-forward svc/mcpo 8080:8080
+   kubectl port-forward svc/mcpo 8000:8000
    ```
 
 2. **Enable ingress** (for production):
