@@ -23,6 +23,6 @@ version: 0.1.4
 # It is recommended to use it with quotes.
 dependencies:
   - name: mcp-library
-    version: 0.1.2
+    version: 0.1.3
     repository: https://arbuzov.github.io/mcp-helm/
 appVersion: "1.16.0"
