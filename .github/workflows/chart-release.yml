@@ -21,16 +21,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Add MCP chart repository
+      - name: Configure Git author
         run: |
-          helm repo add mcp https://arbuzov.github.io/mcp-helm/
-          helm repo update
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Wipe all charts except mcp-library
+        run: |
+          find charts -mindepth 1 -maxdepth 1 ! -name 'mcp-library' -exec rm -rf {} +
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
         with:
-          charts_dir: charts/mcp-library
+          charts_dir: charts
           pages_branch: gh-pages
+          skip_existing: false
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release_all:
@@ -42,6 +47,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Configure Git author
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
       - name: Add MCP chart repository
         run: |
           helm repo add mcp https://arbuzov.github.io/mcp-helm/
@@ -52,6 +62,7 @@ jobs:
         with:
           charts_dir: charts
           pages_branch: gh-pages
+          skip_existing: false
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
