@@ -68,8 +68,12 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ingress.enabled`     | Enable ingress record generation for GitLab MCP          | `false`             |
 | `ingress.className`   | IngressClass that will be be used to implement the Ingress | `""`                |
 | `ingress.annotations` | Additional annotations for the Ingress resource           | `{}`                |
-| `ingress.hosts`       | An array with hosts and paths                             | `[{host: "gitlab-mcp.local", paths: [{path: "/", pathType: "Prefix"}]}]` |
-| `ingress.tls`         | TLS configuration for ingress                             | `[]`                |
+| `ingress.path` | Base path for the service | `/` |
+| `ingress.pathType` | Path matching behavior | `Prefix` |
+| `ingress.hosts` | List of hostnames | `["gitlab-mcp.local"]` |
+| `ingress.tls`         | TLS configuration for ingress            | `[]`                |
+
+When `ingress.path` is not `/`, the annotation `nginx.ingress.kubernetes.io/use-regex: "true"` is automatically added.
 
 ### Environment variables
 
@@ -129,11 +133,9 @@ To access the GitLab MCP server from outside the cluster, you can:
    ingress:
      enabled: true
      className: "nginx"
+     path: /
      hosts:
-       - host: gitlab-mcp.your-domain.com
-         paths:
-           - path: /
-             pathType: Prefix
+       - gitlab-mcp.your-domain.com
    ```
 
 3. **Use LoadBalancer service type**:
