@@ -114,8 +114,8 @@ additional MCP servers.
 mcpo proxies another MCP server. The chart mounts a `config.json` file from a
 ConfigMap and starts the container with `--config /opt/mcpo/config.json`.
 `config.json` is generated from the `config` values found in `values.yaml`. The
-default configuration defines several MCP servers which can be customized by
-editing the `config` section.
+default configuration defines a single MCP server, but you can customize this to
+define multiple servers by editing the `config` section.
 
 ### Exposing the application
 
