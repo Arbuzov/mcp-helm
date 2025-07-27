@@ -4,5 +4,5 @@ description: Common helper templates for MCP charts
 maintainers:
   - name: Open WebUI
 type: library
-version: 0.1.3
+version: 0.1.4
 appVersion: "1.0"
