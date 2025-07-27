@@ -71,14 +71,16 @@ spec:
               subPath: config.json
           livenessProbe:
             httpGet:
-              path: /
+              path: /openapi.json
               port: http
+              scheme: HTTP
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /
+              path: /openapi.json
               port: http
+              scheme: HTTP
             initialDelaySeconds: 5
             periodSeconds: 5
           resources:
