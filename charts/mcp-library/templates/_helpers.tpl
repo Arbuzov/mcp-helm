@@ -74,3 +74,19 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/* Compute ingress path with regex suffix when path prefix is set */}}
+{{- define "mcp-library.ingressPath" -}}
+{{- if and .Values.ingress.path (ne .Values.ingress.path "/") -}}
+{{ printf "%s(/|$)(.*)" .Values.ingress.path }}
+{{- else -}}
+/
+{{- end -}}
+{{- end }}
+
+{{/* Ensure regex annotation for custom ingress paths */}}
+{{- define "mcp-library.ingressUseRegex" -}}
+{{- if and (ne .Values.ingress.path "/") (not (hasKey .Values.ingress.annotations "nginx.ingress.kubernetes.io/use-regex")) -}}
+{{- $_ := set .Values.ingress.annotations "nginx.ingress.kubernetes.io/use-regex" "true" -}}
+{{- end -}}
+{{- end }}

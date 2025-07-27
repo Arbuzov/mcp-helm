@@ -4,6 +4,7 @@
 {{- if and .Values.ingress.className (not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class")) }}
   {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
 {{- end }}
+{{- include "mcp-library.ingressUseRegex" . }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
 {{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -35,10 +36,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- $ingressPath := "/" }}
-    {{- if ne .Values.ingress.path "/" }}
-    {{- $ingressPath = printf "%s(/|$)(.*)" .Values.ingress.path }}
-    {{- end }}
+    {{- $ingressPath := include "mcp-library.ingressPath" . }}
     {{- range .Values.ingress.hosts }}
     - host: {{ if eq . "*" }}""{{ else }}{{ . | quote }}{{ end }}
       http:

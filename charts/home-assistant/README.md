@@ -71,7 +71,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ingress.path` | Base path for the service | `/` |
 | `ingress.pathType` | Path matching behavior | `Prefix` |
 | `ingress.hosts` | List of hostnames | `["hass-mcp.local"]` |
-| `ingress.tls`         | TLS configuration for ingress                             | `[]`                |
+| `ingress.tls`         | TLS configuration for ingress | `[]` |
+
+When `ingress.path` is not `/`, the annotation `nginx.ingress.kubernetes.io/use-regex: "true"` is automatically added.
 
 ### Environment variables
 
