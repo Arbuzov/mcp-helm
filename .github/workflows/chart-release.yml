@@ -15,6 +15,8 @@ permissions:
 jobs:
   release_library:
     runs-on: ubuntu-latest
+    outputs:
+      library_version: ${{ steps.cr.outputs.chart_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,6 +33,7 @@ jobs:
           find charts -mindepth 1 -maxdepth 1 ! -name 'mcp-library' -exec rm -rf {} +
 
       - name: Run chart-releaser
+        id: cr
         uses: helm/chart-releaser-action@v1.7.0
         with:
           charts_dir: charts
@@ -38,6 +41,9 @@ jobs:
           skip_existing: false
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Show released library version
+        run: echo "Released mcp-library version ${{ steps.cr.outputs.chart_version }}"
   release_all:
     needs: release_library
     runs-on: ubuntu-latest
