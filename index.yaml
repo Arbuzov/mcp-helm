@@ -194,6 +194,20 @@ entries:
   mcpo:
   - apiVersion: v2
     appVersion: main
+    created: "2025-07-27T16:49:27.611039458Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.2
+    description: A Helm chart for deploying the mcpo proxy server
+    digest: e1ece2a7733294fb70886f46dc52e0154bc3e02827cd9b5440d718f1eaabc29e
+    name: mcpo
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcpo-0.1.6/mcpo-0.1.6.tgz
+    version: 0.1.6
+  - apiVersion: v2
+    appVersion: main
     created: "2025-07-27T15:29:04.133266651Z"
     dependencies:
     - name: mcp-library
@@ -234,4 +248,4 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/mcpo-0.1.1/mcpo-0.1.1.tgz
     version: 0.1.1
-generated: "2025-07-27T15:29:04.133280076Z"
+generated: "2025-07-27T16:49:27.611057752Z"
