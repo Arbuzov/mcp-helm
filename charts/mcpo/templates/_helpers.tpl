@@ -21,3 +21,8 @@
 {{- define "mcp-mcpo-helm.serviceAccountName" -}}
 {{ include "mcp-library.serviceAccountName" . }}
 {{- end }}
+
+{{/* Render mcpo configuration as pretty JSON */}}
+{{- define "mcp-mcpo-helm.config" -}}
+{{- .Values.config | toPrettyJson }}
+{{- end }}

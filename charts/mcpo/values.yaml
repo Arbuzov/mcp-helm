@@ -94,3 +94,34 @@ envSecrets: {}
 # Secret configuration for sensitive data
 secretEnv:
   data: {}
+
+# Configuration file contents for mcpo. Values will be rendered as JSON in
+# `config.json` and mounted to the container.
+config:
+  mcpServers:
+    memory:
+      command: npx
+      args:
+        - -y
+        - "@modelcontextprotocol/server-memory"
+  # Example of a more complete configuration:
+  # mcpServers:
+  #   memory:
+  #     command: npx
+  #     args:
+  #       - -y
+  #       - "@modelcontextprotocol/server-memory"
+  #   time:
+  #     command: uvx
+  #     args:
+  #       - mcp-server-time
+  #       - --local-timezone=America/New_York
+  #   mcp_sse:
+  #     type: sse
+  #     url: http://127.0.0.1:8001/sse
+  #     headers:
+  #       Authorization: Bearer token
+  #       X-Custom-Header: value
+  #   mcp_streamable_http:
+  #     type: streamable_http
+  #     url: http://127.0.0.1:8002/mcp

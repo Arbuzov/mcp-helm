@@ -33,6 +33,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ or .Values.image.tag .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "--config"
+            - "/opt/mcpo/config.json"
           {{- if or .Values.env .Values.envSecrets .Values.secretEnv.data }}
           env:
             {{- range $key, $val := .Values.env }}
@@ -60,6 +63,10 @@ spec:
             - name: http
               containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /opt/mcpo/config.json
+              subPath: config.json
           livenessProbe:
             httpGet:
               path: /
@@ -86,3 +93,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "mcp-mcpo-helm.fullname" . }}
