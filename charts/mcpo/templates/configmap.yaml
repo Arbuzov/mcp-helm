@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mcp-mcpo-helm.fullname" . }}
+  labels:
+    {{- include "mcp-mcpo-helm.labels" . | nindent 4 }}
+data:
+  config.json: |
+    {{- include "mcp-mcpo-helm.config" . | nindent 4 }}

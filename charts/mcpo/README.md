@@ -79,6 +79,26 @@ The command removes all the Kubernetes components associated with the chart and 
 | `envSecrets` | Environment variables from external secrets         | `{}`  |
 | `secretEnv`  | Environment variables to be set from created secret | `{}`  |
 
+### Configuration file
+
+| Name      | Description                                         | Value |
+| --------- | --------------------------------------------------- | ----- |
+| `config`  | Structure used to generate `config.json`            | `see values.yaml` |
+
+Default `config` structure:
+
+```yaml
+mcpServers:
+  memory:
+    command: npx
+    args:
+      - -y
+      - "@modelcontextprotocol/server-memory"
+```
+
+See the commented example in `values.yaml` for a more complete configuration with
+additional MCP servers.
+
 ### Autoscaling parameters
 
 | Name                                            | Description                              | Value |
@@ -91,7 +111,11 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration and installation details
 
-mcpo proxies another MCP server. Supply the command to run after `--` using `env` or a configuration file mounted as a volume and referenced with `--config`.
+mcpo proxies another MCP server. The chart mounts a `config.json` file from a
+ConfigMap and starts the container with `--config /opt/mcpo/config.json`.
+`config.json` is generated from the `config` values found in `values.yaml`. The
+default configuration defines a single MCP server, but you can customize this to
+define multiple servers by editing the `config` section.
 
 ### Exposing the application
 
