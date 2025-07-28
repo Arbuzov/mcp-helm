@@ -1,5 +1,5 @@
 apiVersion: v2
-name: mcp-home-assistant-helm
+name: mcp-home-assistant
 description: A Helm chart for deploying Home Assistant MCP server
 license: MIT
 maintainers:
