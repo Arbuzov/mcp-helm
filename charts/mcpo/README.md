@@ -119,7 +119,9 @@ mcpo proxies another MCP server. The chart mounts a `config.json` file from a
 ConfigMap and starts the container with `--config /opt/mcpo/config.json`.
 `config.json` is generated from the `config` values found in `values.yaml`. The
 default configuration defines a single MCP server, but you can customize this to
-define multiple servers by editing the `config` section.
+define multiple servers by editing the `config` section. The deployment template
+includes a checksum annotation so pods automatically restart when the ConfigMap
+changes.
 
 ### Exposing the application
 
