@@ -105,6 +105,9 @@ envSecrets: {}
 secretEnv: {}
 
 # Additional sidecar containers to run alongside the main container.
+# Each list item must include `name` and `image` and may specify any other
+# fields allowed in the Kubernetes `Container` spec such as `command`, `args`,
+# `env`, `ports`, or `volumeMounts`.
 # Example:
 # sidecars:
 #   - name: sidecar
