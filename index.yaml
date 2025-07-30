@@ -409,6 +409,21 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-home-assistant-helm-0.1.1/mcp-home-assistant-helm-0.1.1.tgz
     version: 0.1.1
+  mcp-homeassistant:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2025-07-30T20:18:10.097836056Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying Home Assistant MCP server
+    digest: 40c290b4f966546a26f34791636a6da9127521b23e5fd8bed892d1c5271fe16c
+    name: mcp-homeassistant
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-homeassistant-0.2.4/mcp-homeassistant-0.2.4.tgz
+    version: 0.2.4
   mcp-kubernetes:
   - apiVersion: v2
     appVersion: latest
@@ -734,4 +749,4 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/mcpo-0.1.1/mcpo-0.1.1.tgz
     version: 0.1.1
-generated: "2025-07-29T19:44:03.083187942Z"
+generated: "2025-07-30T20:18:10.097944024Z"
