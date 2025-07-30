@@ -103,3 +103,11 @@ envSecrets: {}
 #     CONFLUENCE_API_TOKEN: your_conf_token
 # Keys must be valid Kubernetes secret keys (RFC 1123) and values cannot be empty.
 secretEnv: {}
+
+# Additional sidecar containers to run alongside the main container.
+# Example:
+# sidecars:
+#   - name: sidecar
+#     image: busybox
+#     command: ["sh", "-c", "echo sidecar && sleep 3600"]
+sidecars: []

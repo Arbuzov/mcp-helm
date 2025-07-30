@@ -74,6 +74,9 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- if .Values.sidecars }}
+      {{- include "mcp-library.tplvalues.render" (list . .Values.sidecars) | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
