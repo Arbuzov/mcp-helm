@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "mcp-home-assistant-helm.fullname" . }}
+  name: {{ include "mcp-homeassistant-helm.fullname" . }}
   labels:
-    {{- include "mcp-home-assistant-helm.labels" . | nindent 4 }}
+    {{- include "mcp-homeassistant-helm.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "mcp-home-assistant-helm.selectorLabels" . | nindent 4 }}
+    {{- include "mcp-homeassistant-helm.selectorLabels" . | nindent 4 }}
