@@ -1,23 +1,23 @@
-{{- define "mcp-docker-helm.name" -}}
+{{- define "mcp-homeassistant-helm.name" -}}
 {{ include "mcp-library.name" . }}
 {{- end }}
 
-{{- define "mcp-docker-helm.fullname" -}}
+{{- define "mcp-homeassistant-helm.fullname" -}}
 {{ include "mcp-library.fullname" . }}
 {{- end }}
 
-{{- define "mcp-docker-helm.chart" -}}
+{{- define "mcp-homeassistant-helm.chart" -}}
 {{ include "mcp-library.chart" . }}
 {{- end }}
 
-{{- define "mcp-docker-helm.labels" -}}
+{{- define "mcp-homeassistant-helm.labels" -}}
 {{ include "mcp-library.labels" . }}
 {{- end }}
 
-{{- define "mcp-docker-helm.selectorLabels" -}}
+{{- define "mcp-homeassistant-helm.selectorLabels" -}}
 {{ include "mcp-library.selectorLabels" . }}
 {{- end }}
 
-{{- define "mcp-docker-helm.serviceAccountName" -}}
+{{- define "mcp-homeassistant-helm.serviceAccountName" -}}
 {{ include "mcp-library.serviceAccountName" . }}
 {{- end }}

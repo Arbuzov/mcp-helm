@@ -1,11 +1,11 @@
-# Default values for mcp-docker-helm.
+# Default values for mcp-homeassistant-helm.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: mcp/docker
+  repository: voska/hass-mcp
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
@@ -50,7 +50,7 @@ ingress:
   path: /
   pathType: Prefix
   hosts:
-    - mcp.local
+    - hass-mcp.local
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -82,10 +82,9 @@ tolerations: []
 affinity: {}
 
 # Environment variables for the MCP server
-# Example:
-# env:
-#   MCP_OPTION: "value"
 env: {}
+  # HA_URL: "http://homeassistant.local:8123"
+  # HA_TOKEN: "your-long-lived-access-token"
 
 # Environment variables from secrets
 envSecrets: {}
@@ -93,3 +92,4 @@ envSecrets: {}
 # Secret configuration for sensitive data
 secretEnv:
   data: {}
+    # HA_TOKEN: "your-long-lived-access-token-base64"

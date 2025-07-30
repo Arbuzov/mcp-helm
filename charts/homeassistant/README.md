@@ -1,7 +1,6 @@
-<!-- markdownlint-disable MD013 -->
-# Docker MCP Helm Chart
+# Home Assistant MCP Helm Chart
 
-This Helm chart deploys the Docker MCP server based on the `mcp/docker` Docker image to a Kubernetes cluster.
+This Helm chart deploys the Home Assistant MCP (Model Context Protocol) server based on the `voska/hass-mcp` Docker image to a Kubernetes cluster.
 
 ## Prerequisites
 
@@ -10,20 +9,20 @@ This Helm chart deploys the Docker MCP server based on the `mcp/docker` Docker i
 
 ## Installing the Chart
 
-To install the chart with the release name `docker-mcp`:
+To install the chart with the release name `hass-mcp`:
 
 ```bash
-helm install docker-mcp ./charts/docker-mcp
+helm install hass-mcp ./charts/homeassistant
 ```
 
-The command deploys the MCP server on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
+The command deploys the Home Assistant MCP server on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 ## Uninstalling the Chart
 
-To uninstall/delete the `docker-mcp` deployment:
+To uninstall/delete the `hass-mcp` deployment:
 
 ```bash
-helm delete docker-mcp
+helm delete hass-mcp
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -34,18 +33,18 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Name                      | Description                                     | Value |
 | ------------------------- | ----------------------------------------------- | ----- |
-| `replicaCount`           | Number of MCP replicas to deploy        | `1`   |
-| `nameOverride`           | String to partially override docker-mcp.fullname | `""`  |
-| `fullnameOverride`       | String to fully override docker-mcp.fullname   | `""`  |
+| `replicaCount`           | Number of Home Assistant MCP replicas to deploy        | `1`   |
+| `nameOverride`           | String to partially override hass-mcp.fullname | `""`  |
+| `fullnameOverride`       | String to fully override hass-mcp.fullname   | `""`  |
 
 ### Image parameters
 
 | Name                | Description                                          | Value                    |
 | ------------------- | ---------------------------------------------------- | ------------------------ |
-| `image.repository`  | MCP image repository                          | `mcp/docker` |
-| `image.tag`         | MCP image tag (immutable tags are recommended) | `latest`                 |
-| `image.pullPolicy`  | MCP image pull policy                         | `IfNotPresent`           |
-| `imagePullSecrets`  | MCP image pull secrets                        | `[]`                     |
+| `image.repository`  | Home Assistant MCP image repository                          | `voska/hass-mcp` |
+| `image.tag`         | Home Assistant MCP image tag (immutable tags are recommended) | `latest`                 |
+| `image.pullPolicy`  | Home Assistant MCP image pull policy                         | `IfNotPresent`           |
+| `imagePullSecrets`  | Home Assistant MCP image pull secrets                        | `[]`                     |
 
 ### Service Account parameters
 
@@ -59,19 +58,19 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Name           | Description                        | Value       |
 | -------------- | ---------------------------------- | ----------- |
-| `service.type` | MCP service type            | `ClusterIP` |
-| `service.port` | MCP service HTTP port       | `8080`      |
+| `service.type` | Home Assistant MCP service type            | `ClusterIP` |
+| `service.port` | Home Assistant MCP service HTTP port       | `8080`      |
 
 ### Ingress parameters
 
 | Name                  | Description                                                | Value               |
 | --------------------- | ---------------------------------------------------------- | ------------------- |
-| `ingress.enabled`     | Enable ingress record generation for MCP          | `false`             |
+| `ingress.enabled`     | Enable ingress record generation for Home Assistant MCP          | `false`             |
 | `ingress.className`   | IngressClass that will be be used to implement the Ingress | `""`                |
 | `ingress.annotations` | Additional annotations for the Ingress resource           | `{}`                |
 | `ingress.path` | Base path for the service | `/` |
 | `ingress.pathType` | Path matching behavior | `Prefix` |
-| `ingress.hosts` | List of hostnames | `["mcp.local"]` |
+| `ingress.hosts` | List of hostnames | `["hass-mcp.local"]` |
 | `ingress.tls`         | TLS configuration for ingress | `[]` |
 
 When `ingress.path` is not `/`, the annotation `nginx.ingress.kubernetes.io/use-regex: "true"` is automatically added.
@@ -89,21 +88,43 @@ When `ingress.path` is not `/`, the annotation `nginx.ingress.kubernetes.io/use-
 | Name                                            | Description                                                                                                          | Value   |
 | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------- |
 | `autoscaling.enabled`                           | Enable Horizontal Pod Autoscaler (HPA)                                                                              | `false` |
-| `autoscaling.minReplicas`                       | Minimum number of MCP replicas                                                                               | `1`     |
-| `autoscaling.maxReplicas`                       | Maximum number of MCP replicas                                                                               | `100`   |
+| `autoscaling.minReplicas`                       | Minimum number of Home Assistant MCP replicas                                                                               | `1`     |
+| `autoscaling.maxReplicas`                       | Maximum number of Home Assistant MCP replicas                                                                               | `100`   |
 | `autoscaling.targetCPUUtilizationPercentage`    | Target CPU utilization percentage                                                                                    | `80`    |
 | `autoscaling.targetMemoryUtilizationPercentage` | Target Memory utilization percentage                                                                                 | `""`    |
 
 ## Configuration and installation details
 
+### Setting up Home Assistant access
+
+The Home Assistant MCP server requires access to your Home Assistant instance. You can configure this using environment variables:
+
+1. **Using plain environment variables** (not recommended for production):
+
+   ```yaml
+   env:
+     HA_URL: "http://homeassistant.local:8123"
+     HA_TOKEN: "your-long-lived-access-token"
+   ```
+
+2. **Using secrets** (recommended for production):
+
+   ```yaml
+   secretEnv:
+     data:
+       HA_TOKEN: "your-long-lived-access-token"
+   env:
+     HA_URL: "http://homeassistant.local:8123"
+   ```
+
 ### Exposing the application
 
-To access the MCP server from outside the cluster, you can:
+To access the Home Assistant MCP server from outside the cluster, you can:
 
 1. **Use port forwarding** (for development):
 
    ```bash
-   kubectl port-forward svc/docker-mcp 8080:8080
+   kubectl port-forward svc/hass-mcp 8080:8080
    ```
 
 2. **Enable ingress** (for production):
@@ -114,7 +135,7 @@ To access the MCP server from outside the cluster, you can:
      className: "nginx"
      path: /
      hosts:
-       - docker-mcp.your-domain.com
+       - hass-mcp.your-domain.com
    ```
 
 3. **Use LoadBalancer service type**:
@@ -129,17 +150,17 @@ To access the MCP server from outside the cluster, you can:
 ### Check pod status
 
 ```bash
-kubectl get pods -l app.kubernetes.io/name=docker-mcp-helm
+kubectl get pods -l app.kubernetes.io/name=mcp-homeassistant-helm
 ```
 
 ### Check logs
 
 ```bash
-kubectl logs -l app.kubernetes.io/name=docker-mcp-helm
+kubectl logs -l app.kubernetes.io/name=mcp-homeassistant-helm
 ```
 
 ### Test connection
 
 ```bash
-helm test docker-mcp
+helm test hass-mcp
 ```
