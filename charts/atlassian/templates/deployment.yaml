@@ -37,11 +37,9 @@ spec:
             {{- range .Values.extraArgs }}
             - {{ . | quote }}
             {{- end }}
-            - "--port"
-            - "{{ default 8000 .Values.service.port }}"
+            - "--port={{ default 8000 .Values.service.port }}"
             {{- if ne .Values.ingress.path "/" }}
-            - "--path"
-            - "{{ .Values.ingress.path }}"
+            - "--path={{ .Values.ingress.path }}"
             {{- end }}
           {{- if or .Values.env .Values.envSecrets .Values.secretEnv.data }}
           env:
