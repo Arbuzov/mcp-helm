@@ -35,7 +35,11 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if ne .Values.ingress.path "/" }}
           args:
-            - --path-prefix={{ .Values.ingress.path }}
+            - "--port"
+            - "{{ default 8000 .Values.service.port }}"
+            {{- if ne .Values.ingress.path "/" }}
+            - "--path={{ .Values.ingress.path }}"
+            {{- end }}
           {{- end }}
           {{- if or .Values.env .Values.envSecrets .Values.secretEnv.data }}
           env:
