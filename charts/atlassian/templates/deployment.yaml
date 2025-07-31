@@ -33,14 +33,12 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if ne .Values.ingress.path "/" }}
           args:
             - "--port"
             - "{{ default 8000 .Values.service.port }}"
             {{- if ne .Values.ingress.path "/" }}
             - "--path={{ .Values.ingress.path }}"
             {{- end }}
-          {{- end }}
           {{- if or .Values.env .Values.envSecrets .Values.secretEnv.data }}
           env:
             {{- range $key, $val := .Values.env }}
