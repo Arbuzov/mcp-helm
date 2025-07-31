@@ -40,7 +40,8 @@ spec:
             - "--port"
             - "{{ default 8000 .Values.service.port }}"
             {{- if ne .Values.ingress.path "/" }}
-            - "--path={{ .Values.ingress.path }}"
+            - "--path"
+            - "{{ .Values.ingress.path }}"
             {{- end }}
           {{- if or .Values.env .Values.envSecrets .Values.secretEnv.data }}
           env:
@@ -71,14 +72,9 @@ spec:
               protocol: TCP
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
-            {{- if .Values.livenessProbe.httpGet.enabled }}
             httpGet:
-              path: {{ .Values.livenessProbe.path }}
+              path: /healthz
               port: http
-            {{- else }}
-            tcpSocket:
-              port: http
-            {{- end }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -86,14 +82,9 @@ spec:
           {{- end }}
           {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
-            {{- if .Values.readinessProbe.httpGet.enabled }}
             httpGet:
-              path: {{ .Values.readinessProbe.path }}
+              path: /healthz
               port: http
-            {{- else }}
-            tcpSocket:
-              port: http
-            {{- end }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}

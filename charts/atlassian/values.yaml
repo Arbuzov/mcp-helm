@@ -44,9 +44,6 @@ service:
 # Common paths to try: /health, /status, /ping, /, /sse
 livenessProbe:
   enabled: true
-  httpGet:
-    enabled: false  # Set to true to use HTTP probe, false for TCP
-  path: /sse
   initialDelaySeconds: 40
   periodSeconds: 10
   timeoutSeconds: 10
@@ -54,9 +51,6 @@ livenessProbe:
 
 readinessProbe:
   enabled: true
-  httpGet:
-    enabled: false  # Set to true to use HTTP probe, false for TCP
-  path: /sse
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 10
