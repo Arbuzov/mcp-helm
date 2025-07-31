@@ -66,14 +66,36 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
+            {{- if .Values.livenessProbe.httpGet.enabled }}
             httpGet:
-              path: /sse
+              path: {{ .Values.livenessProbe.path }}
               port: http
+            {{- else }}
+            tcpSocket:
+              port: http
+            {{- end }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
+            {{- if .Values.readinessProbe.httpGet.enabled }}
             httpGet:
-              path: /sse
+              path: {{ .Values.readinessProbe.path }}
               port: http
+            {{- else }}
+            tcpSocket:
+              port: http
+            {{- end }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- if .Values.sidecars }}

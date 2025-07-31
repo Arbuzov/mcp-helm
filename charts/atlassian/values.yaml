@@ -40,6 +40,28 @@ service:
   type: ClusterIP
   port: 8000
 
+# Health check probes configuration
+# Common paths to try: /health, /status, /ping, /, /sse
+livenessProbe:
+  enabled: true
+  httpGet:
+    enabled: false  # Set to true to use HTTP probe, false for TCP
+  path: /health
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    enabled: false  # Set to true to use HTTP probe, false for TCP
+  path: /health
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
 ingress:
   enabled: false
   className: ""
