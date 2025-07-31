@@ -102,6 +102,12 @@ tolerations: []
 
 affinity: {}
 
+# Additional command line arguments to pass to the container.
+# Example:
+# extraArgs:
+#   - "-v"
+extraArgs: []
+
 # Additional environment variables to pass to the container.
 # Example:
 # env:

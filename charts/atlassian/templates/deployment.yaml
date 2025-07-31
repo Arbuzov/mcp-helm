@@ -39,6 +39,9 @@ spec:
             {{- if ne .Values.ingress.path "/" }}
             - "--path={{ .Values.ingress.path }}"
             {{- end }}
+            {{- range .Values.extraArgs }}
+            - {{ . | quote }}
+            {{- end }}
           {{- if or .Values.env .Values.envSecrets .Values.secretEnv.data }}
           env:
             {{- range $key, $val := .Values.env }}
