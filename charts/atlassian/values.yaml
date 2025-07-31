@@ -46,20 +46,20 @@ livenessProbe:
   enabled: true
   httpGet:
     enabled: false  # Set to true to use HTTP probe, false for TCP
-  path: /health
-  initialDelaySeconds: 30
+  path: /sse
+  initialDelaySeconds: 40
   periodSeconds: 10
-  timeoutSeconds: 5
+  timeoutSeconds: 10
   failureThreshold: 3
 
 readinessProbe:
   enabled: true
   httpGet:
     enabled: false  # Set to true to use HTTP probe, false for TCP
-  path: /health
+  path: /sse
   initialDelaySeconds: 5
   periodSeconds: 10
-  timeoutSeconds: 5
+  timeoutSeconds: 10
   failureThreshold: 3
 
 ingress:
