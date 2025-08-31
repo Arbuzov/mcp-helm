@@ -3,6 +3,20 @@ entries:
   mcp-atlassian:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-08-31T16:58:49.570627934Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for Kubernetes
+    digest: 696620651a43184beeac6bcbea6abf56ebd25708df99996bd9f385d1b808c696
+    name: mcp-atlassian
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-atlassian-0.2.25/mcp-atlassian-0.2.25.tgz
+    version: 0.2.25
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2025-08-31T16:41:07.639123258Z"
     dependencies:
     - name: mcp-library
@@ -659,4 +673,4 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/mcpo-0.1.3/mcpo-0.1.3.tgz
     version: 0.1.3
-generated: "2025-08-31T16:41:07.639335618Z"
+generated: "2025-08-31T16:58:49.570809375Z"
