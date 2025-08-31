@@ -8,15 +8,19 @@ spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "mcp-atlassian-helm.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        checksum/values: {{ toYaml .Values | sha256sum }}
+        rollme: {{ randAlphaNum 5 | quote }}
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
       labels:
         {{- include "mcp-atlassian-helm.selectorLabels" . | nindent 8 }}
     spec:
@@ -24,20 +28,19 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "mcp-atlassian-helm.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      serviceAccountName: default
+      securityContext: {}
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+          securityContext: {}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             {{- range .Values.extraArgs }}
             - {{ . | quote }}
             {{- end }}
-            - "--port={{ default 8000 .Values.service.port }}"
+            - "--port"
+            - "{{ default 8000 .Values.service.port }}"
             {{- if ne .Values.ingress.path "/" }}
             - "--path={{ .Values.ingress.path }}"
             {{- end }}
@@ -72,7 +75,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-              port: http
+              port: 8000
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -82,7 +85,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /healthz
-              port: http
+              port: 8000
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}

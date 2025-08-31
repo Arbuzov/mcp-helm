@@ -44,14 +44,16 @@ service:
 # Common paths to try: /health, /status, /ping, /, /sse
 livenessProbe:
   enabled: true
-  initialDelaySeconds: 40
-  periodSeconds: 10
+  path: /healthz
+  initialDelaySeconds: 60
+  periodSeconds: 30
   timeoutSeconds: 10
   failureThreshold: 3
 
 readinessProbe:
   enabled: true
-  initialDelaySeconds: 5
+  path: /healthz
+  initialDelaySeconds: 15
   periodSeconds: 10
   timeoutSeconds: 10
   failureThreshold: 3
@@ -71,7 +73,13 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
