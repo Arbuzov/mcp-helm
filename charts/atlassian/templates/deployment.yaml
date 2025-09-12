@@ -28,7 +28,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: default
+      serviceAccountName: {{ include "mcp-atlassian-helm.serviceAccountName" . }}
       securityContext: {}
       containers:
         - name: {{ .Chart.Name }}

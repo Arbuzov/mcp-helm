@@ -38,7 +38,25 @@ spec:
   rules:
     {{- $ingressPath := include "mcp-library.ingressPath" . }}
     {{- range .Values.ingress.hosts }}
-    - host: {{ if eq . "*" }}""{{ else }}{{ . | quote }}{{ end }}
+    {{- if eq . "*" }}
+    - http:
+        paths:
+          - path: {{ $ingressPath }}
+            {{- if and $.Values.ingress.pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.Version) }}
+            pathType: {{ $.Values.ingress.pathType }}
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.Version }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+              {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+              {{- end }}
+    {{- else }}
+    - host: {{ . | quote }}
       http:
         paths:
           - path: {{ $ingressPath }}
@@ -55,5 +73,6 @@ spec:
               serviceName: {{ $fullName }}
               servicePort: {{ $svcPort }}
               {{- end }}
+    {{- end }}
     {{- end }}
 {{- end }}
