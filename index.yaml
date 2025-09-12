@@ -3,6 +3,21 @@ entries:
   mcp-atlassian:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-09-12T08:24:28.737587258Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for Kubernetes
+    digest: a3e19c1e9d44749363ff7353135c9edaa0dd2b4520b9a7ad2a50eddac29bf1d8
+    icon: https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/atlassian.svg
+    name: mcp-atlassian
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-atlassian-0.2.26/mcp-atlassian-0.2.26.tgz
+    version: 0.2.26
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2025-08-31T16:58:49.570627934Z"
     dependencies:
     - name: mcp-library
@@ -673,4 +688,26 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/mcpo-0.1.3/mcpo-0.1.3.tgz
     version: 0.1.3
-generated: "2025-08-31T16:58:49.570809375Z"
+  search-helm-chart:
+  - apiVersion: v1
+    created: "2025-09-12T08:24:28.839250241Z"
+    description: A Helm chart for deploying a search tool with crawler and flaresolverr
+      services
+    digest: be08b17f1d8e8ce9755cd932895001fb969360e0aeff9e92ea82f6c2a0180345
+    home: https://example.com
+    keywords:
+    - search
+    - crawler
+    - flaresolverr
+    - helm
+    - chart
+    maintainers:
+    - email: your.email@example.com
+      name: Your Name
+    name: search-helm-chart
+    sources:
+    - https://github.com/example/search-helm-chart
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/search-helm-chart-0.1.0/search-helm-chart-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-09-12T08:24:28.839460465Z"
