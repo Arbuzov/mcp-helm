@@ -1,0 +1,6 @@
+dependencies:
+- name: mcp-library
+  repository: https://arbuzov.github.io/mcp-helm/
+  version: 0.1.4
+digest: sha256:799bc0ea4d95dcc1151b803b7833e90425726dd9b2ef53aa65f8b6c274ec8ad2
+generated: "2025-09-12T11:03:22.384807+03:00"

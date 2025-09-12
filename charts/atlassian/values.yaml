@@ -65,9 +65,9 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   path: /
-  pathType: ImplementationSpecific
+  pathType: Prefix
   hosts:
-    - chart-example.local
+    - atlassian.local
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
