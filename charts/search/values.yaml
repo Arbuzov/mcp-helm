@@ -1,0 +1,26 @@
+image:
+  repository: your-docker-repo/search-tool
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - /
+
+resources: {}
+  
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

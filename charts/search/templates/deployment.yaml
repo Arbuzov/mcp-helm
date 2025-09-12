@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "search-helm-chart.fullname" . }}
+  labels:
+    {{- include "search-helm-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "search-helm-chart.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "search-helm-chart.name" . }}
+    spec:
+      containers:
+        - name: crawler
+          image: {{ .Values.crawler.image.repository }}:{{ .Values.crawler.image.tag }}
+          ports:
+            - containerPort: {{ .Values.crawler.service.port }}
+          env:
+            {{- range $key, $value := .Values.crawler.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+        - name: flaresolverr
+          image: {{ .Values.flaresolverr.image.repository }}:{{ .Values.flaresolverr.image.tag }}
+          ports:
+            - containerPort: {{ .Values.flaresolverr.service.port }}
+          env:
+            {{- range $key, $value := .Values.flaresolverr.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "search-helm-chart.fullname" . }}-config
