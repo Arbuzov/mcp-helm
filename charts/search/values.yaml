@@ -18,7 +18,7 @@ ingress:
         - /
 
 resources: {}
-  
+
 nodeSelector: {}
 
 tolerations: []
