@@ -1,51 +1,60 @@
-# Search Tool Helm Chart
+# Search Helm Chart
 
-This Helm chart deploys a search tool consisting of multiple services, including a crawler and flaresolverr, on a Kubernetes cluster. It provides a convenient way to manage the deployment and configuration of these services.
+This chart deploys the MCP search crawler together with a companion FlareSolverr
+instance. It packages both services in a single release so that they can share
+configuration, lifecycle, and network policies when running on Kubernetes.
 
 ## Prerequisites
 
-- Kubernetes 1.12+
-- Helm 3.x
+- Kubernetes 1.22+
+- Helm 3.9+
 
 ## Installation
 
-To install the chart, use the following command:
+Install the chart from the repository root:
 
 ```bash
-helm install <release-name> ./search-helm-chart
+helm install search ./charts/search
 ```
 
-Replace `<release-name>` with your desired release name.
+Override configuration values by providing a custom `values.yaml` file or by
+setting flags during installation:
+
+```bash
+helm install search ./charts/search \
+  --set crawler.image.repository=myrepo/crawler \
+  --set flaresolverr.image.repository=myrepo/flaresolverr
+```
 
 ## Configuration
 
-The following table lists the configurable parameters of the chart and their default values:
+| Parameter | Description | Default |
+| --- | --- | --- |
+| `replicaCount` | Number of crawler pods to run. | `1` |
+| `crawler.image.repository` | Container image for the crawler service. | `your-docker-repo/search-crawler` |
+| `crawler.service.port` | Container port exposed by the crawler. | `8080` |
+| `crawler.env` | Key/value environment variables for the crawler container. | `{}` |
+| `flaresolverr.image.repository` | Container image for FlareSolverr. | `your-docker-repo/flaresolverr` |
+| `flaresolverr.service.port` | Container port exposed by FlareSolverr. | `8191` |
+| `service.type` | Kubernetes service type for external access. | `ClusterIP` |
+| `service.port` | Service port forwarded to the crawler container. | `80` |
+| `ingress.enabled` | Enable Kubernetes ingress resources. | `false` |
+| `ingress.hosts` | Host and path rules for ingress routing. | `[{ host: "search.local", paths: [{ path: "/", pathType: "Prefix" }] }]` |
+| `config.enabled` | Create a config map and mount it into the pods. | `false` |
+| `config.mountPath` | Path where the rendered config map is mounted. | `/etc/config` |
+| `secret.data` | Map of base64 encoded secret values exposed to the pods. | `{}` |
 
-| Parameter                     | Description                                      | Default                |
-|-------------------------------|--------------------------------------------------|------------------------|
-| `image.repository`            | Image repository for the crawler and flaresolverr | `your-image-repo`      |
-| `image.tag`                   | Image tag for the crawler and flaresolverr      | `latest`               |
-| `service.type`                | Service type (ClusterIP, NodePort, LoadBalancer) | `ClusterIP`            |
-| `service.port`                | Port for the service                             | `80`                   |
-| `env`                         | Environment variables for the containers         | `{}`                   |
-
-## Usage
-
-After installation, you can access the services using the service endpoints. If you have configured ingress, you can access them via the specified hostnames.
+Refer to `values.yaml` for the complete list of tunable settings.
 
 ## Uninstallation
 
-To uninstall the chart, use the following command:
+Remove the release and all associated Kubernetes objects:
 
 ```bash
-helm uninstall <release-name>
+helm uninstall search
 ```
-
-## Notes
-
-- Ensure that your Kubernetes cluster has sufficient resources to run the services.
-- For more advanced configurations, refer to the `values.yaml` file.
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the Apache 2.0 License. See `Chart.yaml` for
+more details.

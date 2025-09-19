@@ -1,7 +1,40 @@
-image:
-  repository: your-docker-repo/search-tool
-  tag: latest
-  pullPolicy: IfNotPresent
+replicaCount: 1
+
+nameOverride: ""
+fullnameOverride: ""
+
+imagePullSecrets: []
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+crawler:
+  image:
+    repository: your-docker-repo/search-crawler
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    port: 8080
+  env: {}
+  resources: {}
+  securityContext: {}
+
+flaresolverr:
+  image:
+    repository: your-docker-repo/flaresolverr
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    port: 8191
+  env: {}
+  resources: {}
+  securityContext: {}
 
 service:
   enabled: true
@@ -11,14 +44,23 @@ service:
 
 ingress:
   enabled: false
+  className: ""
   annotations: {}
   hosts:
-    - host: chart-example.local
+    - host: search.local
       paths:
-        - /
+        - path: /
+          pathType: Prefix
+  tls: []
 
-resources: {}
-  
+config:
+  enabled: false
+  mountPath: /etc/config
+  data: {}
+
+secret:
+  data: {}
+
 nodeSelector: {}
 
 tolerations: []

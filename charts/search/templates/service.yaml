@@ -1,15 +1,17 @@
+{{- if .Values.service.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "search-helm-chart.fullname" . }}
+  name: {{ include "search.fullname" . }}
   labels:
-    app: {{ include "search-helm-chart.name" . }}
+    {{- include "search.labels" . | nindent 4 }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.service.type }}
   ports:
-    - port: 80
-      targetPort: 8080
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort | default .Values.crawler.service.port }}
       protocol: TCP
-      name: http
   selector:
-    app: {{ include "search-helm-chart.name" . }}
+    {{- include "search.selectorLabels" . | nindent 4 }}
+{{- end }}
