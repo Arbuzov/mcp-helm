@@ -1,35 +1,38 @@
-{{/*
-Expand the name of the chart
-*/}}
-{{- define "search-helm-chart.name" -}}
-{{- .Chart.Name | quote -}}
+{{- define "search.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{/*
-Expand the full name of the chart
-*/}}
-{{- define "search-helm-chart.fullname" -}}
-{{- printf "%s-%s" .Release.Name .Chart.Name | quote -}}
+{{- define "search.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}
 
-{{/*
-Common labels
-*/}}
-{{- define "search-helm-chart.labels" -}}
-app: {{ include "search-helm-chart.name" . }}
-release: {{ .Release.Name }}
+{{- define "search.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" -}}
 {{- end -}}
 
-{{/*
-Get the image name
-*/}}
-{{- define "search-helm-chart.image" -}}
-{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+{{- define "search.labels" -}}
+helm.sh/chart: {{ include "search.chart" . }}
+{{ include "search.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
-{{/*
-Get the service name
-*/}}
-{{- define "search-helm-chart.serviceName" -}}
-{{ include "search-helm-chart.fullname" . }}-service
+{{- define "search.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "search.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+
+{{- define "search.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+{{- default (include "search.fullname" .) .Values.serviceAccount.name -}}
+{{- else -}}
+{{- default "default" .Values.serviceAccount.name -}}
+{{- end -}}
 {{- end -}}
