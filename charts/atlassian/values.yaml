@@ -45,6 +45,8 @@ service:
 livenessProbe:
   enabled: true
   path: /healthz
+  # Defaults to service.port when not set
+  port: null
   initialDelaySeconds: 60
   periodSeconds: 30
   timeoutSeconds: 10
@@ -53,6 +55,8 @@ livenessProbe:
 readinessProbe:
   enabled: true
   path: /healthz
+  # Defaults to service.port when not set
+  port: null
   initialDelaySeconds: 15
   periodSeconds: 10
   timeoutSeconds: 10

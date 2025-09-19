@@ -75,7 +75,7 @@ spec:
           livenessProbe:
             httpGet:
               path: {{ (default "/healthz" .Values.livenessProbe.path) | quote }}
-              port: {{ .Values.service.port }}
+              port: {{ default .Values.service.port .Values.livenessProbe.port }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -85,7 +85,7 @@ spec:
           readinessProbe:
             httpGet:
               path: {{ (default "/healthz" .Values.readinessProbe.path) | quote }}
-              port: {{ .Values.service.port }}
+              port: {{ default .Values.service.port .Values.readinessProbe.port }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
