@@ -25,6 +25,8 @@ spec:
         {{- include "mcp-atlassian-helm.selectorLabels" . | nindent 8 }}
     spec:
       {{- $servicePort := default 8000 .Values.service.port }}
+      {{- $livenessPort := default $servicePort .Values.livenessProbe.port }}
+      {{- $readinessPort := default $servicePort .Values.readinessProbe.port }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -76,7 +78,7 @@ spec:
           livenessProbe:
             httpGet:
               path: "/healthz"
-              port: {{ $servicePort }}
+              port: {{ $livenessPort }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -86,7 +88,7 @@ spec:
           readinessProbe:
             httpGet:
               path: "/healthz"
-              port: {{ $servicePort }}
+              port: {{ $readinessPort }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
