@@ -1,11 +1,10 @@
-name: search-helm-chart
-version: 0.1.0
+apiVersion: v2
+name: search
 description: >-
-  A Helm chart for deploying a search tool with crawler and flaresolverr
-  services
-maintainers:
-  - name: Your Name
-    email: your.email@example.com
+  Deploys the MCP search crawler together with FlareSolverr support services.
+type: application
+version: 0.1.2
+appVersion: "latest"
 keywords:
   - search
   - crawler

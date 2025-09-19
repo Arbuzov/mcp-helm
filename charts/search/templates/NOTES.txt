@@ -1,1 +1,19 @@
-helm install <release-name> ./search-helm-chart
+1. Get the application URL by running these commands:
+{{- if .Values.ingress.enabled }}
+{{- range $host := .Values.ingress.hosts }}
+{{- range $path := $host.paths }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ $path.path }}
+{{- end }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath='{.spec.ports[0].nodePort}' services {{ include "search.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath='{.items[0].status.addresses[0].address}')
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.service.type }}
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "search.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.service.port }}
+{{- else }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "search.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath='{.items[0].metadata.name}')
+  kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:{{ .Values.service.targetPort | default .Values.crawler.service.port }}
+  echo http://127.0.0.1:8080
+{{- end }}
