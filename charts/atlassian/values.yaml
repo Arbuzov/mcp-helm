@@ -48,9 +48,6 @@ livenessProbe:
   periodSeconds: 30
   timeoutSeconds: 10
   failureThreshold: 3
-  # Optional HTTP port override for the liveness probe.
-  # Defaults to the service port.
-  port: null
 
 readinessProbe:
   enabled: true
@@ -58,9 +55,6 @@ readinessProbe:
   periodSeconds: 10
   timeoutSeconds: 10
   failureThreshold: 3
-  # Optional HTTP port override for the readiness probe.
-  # Defaults to the service port.
-  port: null
 
 ingress:
   enabled: false
