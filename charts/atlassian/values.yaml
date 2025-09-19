@@ -7,7 +7,8 @@ replicaCount: 1
 image:
   repository: ghcr.io/sooperset/mcp-atlassian
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
+  # Overrides the image tag.
+  # Defaults to the chart appVersion.
   tag: "0.11.9"
 
 imagePullSecrets: []
@@ -20,7 +21,7 @@ serviceAccount:
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # If unset, a name is generated from the fullname template.
   name: ""
 
 podAnnotations: {}
@@ -41,10 +42,10 @@ service:
   port: 8000
 
 # Health check probes configuration
-# Common paths to try: /health, /status, /ping, /, /sse
 livenessProbe:
   enabled: true
-  path: /healthz
+  # Override the port used by the liveness probe. Defaults to service.port.
+  port: null
   initialDelaySeconds: 60
   periodSeconds: 30
   timeoutSeconds: 10
@@ -52,7 +53,8 @@ livenessProbe:
 
 readinessProbe:
   enabled: true
-  path: /healthz
+  # Override the port used by the readiness probe. Defaults to service.port.
+  port: null
   initialDelaySeconds: 15
   periodSeconds: 10
   timeoutSeconds: 10
@@ -80,10 +82,9 @@ resources:
   requests:
     cpu: 200m
     memory: 256Mi
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # Leave defaults empty so users can choose resource requests.
+  # This also helps run on smaller clusters such as Minikube.
+  # Uncomment the examples below to enforce resource limits.
   # limits:
   #   cpu: 100m
   #   memory: 128Mi
@@ -124,14 +125,15 @@ env: {}
 #     key: jiraApiToken
 envSecrets: {}
 
-# Create a Kubernetes secret from the following data and expose the keys as environment variables.
+# Create a Kubernetes secret from the following data.
+# The keys will be exposed as environment variables.
 # Example:
 # secretEnv:
 #   name: mcp-atlassian-env
 #   data:
 #     JIRA_API_TOKEN: your_jira_token
 #     CONFLUENCE_API_TOKEN: your_conf_token
-# Keys must be valid Kubernetes secret keys (RFC 1123) and values cannot be empty.
+# Keys must follow RFC 1123 naming rules and values cannot be empty.
 secretEnv: {}
 
 # Additional sidecar containers to run alongside the main container.

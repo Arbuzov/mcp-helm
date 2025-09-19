@@ -24,6 +24,7 @@ spec:
       labels:
         {{- include "mcp-atlassian-helm.selectorLabels" . | nindent 8 }}
     spec:
+      {{- $servicePort := default 8000 .Values.service.port }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -40,7 +41,7 @@ spec:
             - {{ . | quote }}
             {{- end }}
             - "--port"
-            - "{{ default 8000 .Values.service.port }}"
+            - "{{ $servicePort }}"
             {{- if ne .Values.ingress.path "/" }}
             - "--path={{ .Values.ingress.path }}"
             {{- end }}
@@ -69,23 +70,25 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ $servicePort }}
               protocol: TCP
+          {{- $livenessPort := default $servicePort .Values.livenessProbe.port }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
-              path: /healthz
-              port: 8000
+              path: "/healthz"
+              port: {{ $livenessPort }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           {{- end }}
+          {{- $readinessPort := default $servicePort .Values.readinessProbe.port }}
           {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
-              path: /healthz
-              port: 8000
+              path: "/healthz"
+              port: {{ $readinessPort }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
