@@ -44,6 +44,8 @@ service:
 # Health check probes configuration
 livenessProbe:
   enabled: true
+  # Override the port used by the liveness probe. Defaults to service.port.
+  port: null
   initialDelaySeconds: 60
   periodSeconds: 30
   timeoutSeconds: 10
@@ -51,6 +53,8 @@ livenessProbe:
 
 readinessProbe:
   enabled: true
+  # Override the port used by the readiness probe. Defaults to service.port.
+  port: null
   initialDelaySeconds: 15
   periodSeconds: 10
   timeoutSeconds: 10

@@ -16,7 +16,7 @@ A Helm chart for Kubernetes
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"ghcr.io/sooperset/mcp-atlassian"` |  |
-| image.tag | string | `"1.16.0"` |  |
+| image.tag | string | `"0.11.9"` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.className | string | `""` |  |
@@ -40,6 +40,8 @@ A Helm chart for Kubernetes
 | tolerations | list | `[]` |  |
 | env | object | `{}` | Extra environment variables |
 | envSecrets | object | `{}` | Environment variables from secrets |
+| livenessProbe.port | int | `nil` | Override port used by the liveness probe; defaults to `service.port` |
+| readinessProbe.port | int | `nil` | Override port used by the readiness probe; defaults to `service.port` |
 | secretEnv | object | `{}` | Create secret with environment data; keys must be valid secret keys and values cannot be empty |
 | sidecars | list | `[]` | Additional sidecar containers |
 
