@@ -343,6 +343,20 @@ entries:
   mcp-gitlab:
   - apiVersion: v2
     appVersion: latest
+    created: "2025-09-19T18:42:11.774571877Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying GitLab MCP server
+    digest: b3cecb103cdcd00f110388cec952f475e30ec6fddf49cdec729a88cf79cc404d
+    name: mcp-gitlab
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-gitlab-0.2.6/mcp-gitlab-0.2.6.tgz
+    version: 0.2.6
+  - apiVersion: v2
+    appVersion: latest
     created: "2025-07-27T21:27:51.071539296Z"
     dependencies:
     - name: mcp-library
@@ -703,6 +717,27 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/mcpo-0.1.3/mcpo-0.1.3.tgz
     version: 0.1.3
+  search:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2025-09-19T18:42:12.033577465Z"
+    description: Deploys the MCP search crawler together with FlareSolverr support
+      services.
+    digest: 6a3893aa25715dcfbfb193600539e7efb31493183e86fddaaeccbc6a06b06b06
+    home: https://example.com
+    keywords:
+    - search
+    - crawler
+    - flaresolverr
+    - helm
+    - chart
+    name: search
+    sources:
+    - https://github.com/example/search-helm-chart
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/search-0.1.1/search-0.1.1.tgz
+    version: 0.1.1
   search-helm-chart:
   - apiVersion: v1
     created: "2025-09-12T08:24:28.839250241Z"
@@ -725,4 +760,4 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/search-helm-chart-0.1.0/search-helm-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2025-09-12T17:50:04.706101564Z"
+generated: "2025-09-19T18:42:12.033702317Z"
