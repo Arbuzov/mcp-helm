@@ -3,6 +3,21 @@ entries:
   mcp-atlassian:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-09-19T19:59:23.071390429Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for Kubernetes
+    digest: 02273586111d9cddb3585d69266eb7f51de8cb8e482f70c867aa9f4879c5a69d
+    icon: https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/atlassian.svg
+    name: mcp-atlassian
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-atlassian-0.2.28/mcp-atlassian-0.2.28.tgz
+    version: 0.2.28
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2025-09-12T17:50:04.705905407Z"
     dependencies:
     - name: mcp-library
@@ -720,6 +735,26 @@ entries:
   search:
   - apiVersion: v2
     appVersion: latest
+    created: "2025-09-19T19:59:23.483850894Z"
+    description: Deploys the MCP search crawler together with FlareSolverr support
+      services.
+    digest: aaf445afaae3602b98f15817d5e0c39a35df473171b7f1d9dcaf23bc78fe0147
+    home: https://example.com
+    keywords:
+    - search
+    - crawler
+    - flaresolverr
+    - helm
+    - chart
+    name: search
+    sources:
+    - https://github.com/example/search-helm-chart
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/search-0.1.2/search-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: latest
     created: "2025-09-19T18:42:12.033577465Z"
     description: Deploys the MCP search crawler together with FlareSolverr support
       services.
@@ -760,4 +795,4 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/search-helm-chart-0.1.0/search-helm-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2025-09-19T18:42:12.033702317Z"
+generated: "2025-09-19T19:59:23.484067337Z"
