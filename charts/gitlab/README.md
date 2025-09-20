@@ -61,6 +61,25 @@ The command removes all the Kubernetes components associated with the chart and 
 | `service.type` | GitLab MCP service type            | `ClusterIP` |
 | `service.port` | GitLab MCP service HTTP port       | `8080`      |
 
+### Health probe parameters
+
+| Name                                  | Description                                                       | Value |
+| ------------------------------------- | ----------------------------------------------------------------- | ----- |
+| `livenessProbe.enabled`               | Enable liveness probe                                             | `true` |
+| `livenessProbe.port`                  | Port used by the liveness probe                                   | `3002` |
+| `livenessProbe.initialDelaySeconds`   | Delay before the liveness probe starts                            | `60`   |
+| `livenessProbe.periodSeconds`         | Frequency of the liveness probe                                   | `30`   |
+| `livenessProbe.timeoutSeconds`        | Timeout for the liveness probe                                    | `10`   |
+| `livenessProbe.failureThreshold`      | Number of consecutive failures before marking the pod as unhealthy | `3`    |
+| `readinessProbe.enabled`              | Enable readiness probe                                             | `true` |
+| `readinessProbe.port`                 | Port used by the readiness probe                                  | `3002` |
+| `readinessProbe.initialDelaySeconds`  | Delay before the readiness probe starts                           | `15`   |
+| `readinessProbe.periodSeconds`        | Frequency of the readiness probe                                  | `10`   |
+| `readinessProbe.timeoutSeconds`       | Timeout for the readiness probe                                   | `10`   |
+| `readinessProbe.failureThreshold`     | Number of consecutive failures before marking the pod as unready  | `3`    |
+
+Both probes use the `/health` endpoint by default.
+
 ### Ingress parameters
 
 | Name                  | Description                                                | Value               |

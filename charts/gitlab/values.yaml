@@ -41,6 +41,25 @@ service:
   port: 8080
   targetPort: 8080
 
+# Health check probes configuration
+livenessProbe:
+  enabled: true
+  # Override the port used by the liveness probe. Defaults to 3002.
+  port: 3002
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  enabled: true
+  # Override the port used by the readiness probe. Defaults to 3002.
+  port: 3002
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+
 ingress:
   enabled: false
   className: ""
