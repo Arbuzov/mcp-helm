@@ -358,6 +358,21 @@ entries:
   mcp-gitlab:
   - apiVersion: v2
     appVersion: latest
+    created: "2025-09-20T18:26:16.044141437Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying GitLab MCP server
+    digest: 146edc32be5a76062ebb7be98c3b64a601bf29e9875cff0a17f0d3165ea4238f
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    name: mcp-gitlab
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-gitlab-0.3.1/mcp-gitlab-0.3.1.tgz
+    version: 0.3.1
+  - apiVersion: v2
+    appVersion: latest
     created: "2025-09-20T14:02:28.884924991Z"
     dependencies:
     - name: mcp-library
@@ -823,4 +838,4 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/search-helm-chart-0.1.0/search-helm-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2025-09-20T14:02:29.043409051Z"
+generated: "2025-09-20T18:26:16.819423488Z"
