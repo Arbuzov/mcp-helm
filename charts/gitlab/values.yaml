@@ -38,14 +38,11 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 8080
-  targetPort: 8080
+  port: 3002
 
 # Health check probes configuration
 livenessProbe:
   enabled: true
-  # Override the port used by the liveness probe. Defaults to 3002.
-  port: 3002
   initialDelaySeconds: 60
   periodSeconds: 30
   timeoutSeconds: 10
@@ -53,8 +50,6 @@ livenessProbe:
 
 readinessProbe:
   enabled: true
-  # Override the port used by the readiness probe. Defaults to 3002.
-  port: 3002
   initialDelaySeconds: 15
   periodSeconds: 10
   timeoutSeconds: 10

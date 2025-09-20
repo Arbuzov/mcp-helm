@@ -2,6 +2,7 @@ apiVersion: v2
 name: search
 description: >-
   Deploys the MCP search crawler together with FlareSolverr support services.
+icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
 type: application
 version: 0.1.2
 appVersion: "latest"

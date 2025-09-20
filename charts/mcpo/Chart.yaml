@@ -1,6 +1,7 @@
 apiVersion: v2
 name: mcpo
 description: A Helm chart for deploying the mcpo proxy server
+icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
 
 # A chart can be either an 'application' or a 'library' chart.
 #

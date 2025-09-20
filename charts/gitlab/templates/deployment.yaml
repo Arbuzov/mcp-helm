@@ -20,6 +20,7 @@ spec:
       labels:
         {{- include "mcp-gitlab-helm.selectorLabels" . | nindent 8 }}
     spec:
+      {{- $servicePort := default 3002 .Values.service.port }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -62,25 +63,23 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.targetPort }}
+              containerPort: {{ $servicePort }}
               protocol: TCP
-          {{- $livenessPort := default 3002 .Values.livenessProbe.port }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
               path: "/health"
-              port: {{ $livenessPort }}
+              port: {{ $servicePort }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           {{- end }}
-          {{- $readinessPort := default 3002 .Values.readinessProbe.port }}
           {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: "/health"
-              port: {{ $readinessPort }}
+              port: {{ $servicePort }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
