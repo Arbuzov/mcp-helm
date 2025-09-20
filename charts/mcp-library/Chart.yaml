@@ -1,6 +1,7 @@
 apiVersion: v2
 name: mcp-library
 description: Common helper templates for MCP charts
+icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
 maintainers:
   - name: Open WebUI
 type: library

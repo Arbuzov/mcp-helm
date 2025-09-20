@@ -1,6 +1,7 @@
 apiVersion: v2
 name: mcp-kubernetes
 description: A Helm chart for deploying the MCP server
+icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
 
 # A chart can be either an 'application' or a 'library' chart.
 #

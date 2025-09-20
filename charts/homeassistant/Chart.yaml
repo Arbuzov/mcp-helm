@@ -1,6 +1,7 @@
 apiVersion: v2
 name: mcp-homeassistant
 description: A Helm chart for deploying Home Assistant MCP server
+icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
 
 # A chart can be either an 'application' or a 'library' chart.
 #
