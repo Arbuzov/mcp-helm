@@ -16,7 +16,7 @@ serviceAccount:
 
 crawler:
   image:
-    repository: your-docker-repo/search-crawler
+    repository: ghcr.io/modelcontextprotocol/search-crawler
     tag: latest
     pullPolicy: IfNotPresent
   service:
@@ -27,7 +27,7 @@ crawler:
 
 flaresolverr:
   image:
-    repository: your-docker-repo/flaresolverr
+    repository: ghcr.io/flaresolverr/flaresolverr
     tag: latest
     pullPolicy: IfNotPresent
   service:
