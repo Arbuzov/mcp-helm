@@ -107,3 +107,14 @@ envSecrets: {}
 secretEnv:
   data: {}
     # GITLAB_TOKEN: "your-gitlab-token-base64-encoded"
+
+# Additional sidecar containers to run alongside the main container.
+# Each list item must include `name` and `image` and may specify any other
+# fields allowed in the Kubernetes `Container` spec such as `command`, `args`,
+# `env`, `ports`, or `volumeMounts`.
+# Example:
+# sidecars:
+#   - name: sidecar
+#     image: busybox
+#     command: ["sh", "-c", "echo sidecar && sleep 3600"]
+sidecars: []

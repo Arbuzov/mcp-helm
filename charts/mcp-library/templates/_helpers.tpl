@@ -10,6 +10,13 @@
 {{- tpl (toYaml $vals) $root }}
 {{- end }}
 
+{{/* Render sidecar containers from .Values.sidecars */}}
+{{- define "mcp-library.sidecars" -}}
+{{- if .Values.sidecars }}
+{{- include "mcp-library.tplvalues.render" (list . .Values.sidecars) -}}
+{{- end -}}
+{{- end }}
+
 {{/* Extra volumes for pod spec */}}
 {{- define "mcp-library.extraVolumes" -}}
 {{- if .Values.extraVolumes }}

@@ -61,6 +61,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | `service.type` | GitLab MCP service type            | `ClusterIP` |
 | `service.port` | GitLab MCP service HTTP port       | `3002`      |
 
+| Name       | Description                     | Value |
+| ---------- | ------------------------------- | ----- |
+| `sidecars` | Additional sidecar containers   | `[]`  |
+
 ### Health probe parameters
 
 | Name                                  | Description                                                       | Value |
