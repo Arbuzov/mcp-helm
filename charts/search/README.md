@@ -31,10 +31,10 @@ helm install search ./charts/search \
 | Parameter | Description | Default |
 | --- | --- | --- |
 | `replicaCount` | Number of crawler pods to run. | `1` |
-| `crawler.image.repository` | Container image for the crawler service. | `your-docker-repo/search-crawler` |
+| `crawler.image.repository` | Container image for the crawler service. | `ghcr.io/modelcontextprotocol/search-crawler` |
 | `crawler.service.port` | Container port exposed by the crawler. | `8080` |
 | `crawler.env` | Key/value environment variables for the crawler container. | `{}` |
-| `flaresolverr.image.repository` | Container image for FlareSolverr. | `your-docker-repo/flaresolverr` |
+| `flaresolverr.image.repository` | Container image for FlareSolverr. | `ghcr.io/flaresolverr/flaresolverr` |
 | `flaresolverr.service.port` | Container port exposed by FlareSolverr. | `8191` |
 | `service.type` | Kubernetes service type for external access. | `ClusterIP` |
 | `service.port` | Service port forwarded to the crawler container. | `80` |
