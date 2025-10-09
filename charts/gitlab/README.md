@@ -42,7 +42,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Name                | Description                                          | Value                    |
 | ------------------- | ---------------------------------------------------- | ------------------------ |
 | `image.repository`  | GitLab MCP image repository                          | `iwakitakuma/gitlab-mcp` |
-| `image.tag`         | GitLab MCP image tag (immutable tags are recommended) | `latest`                 |
+| `image.tag`         | GitLab MCP image tag (immutable tags are recommended) | `2.0.6`                  |
 | `image.pullPolicy`  | GitLab MCP image pull policy                         | `IfNotPresent`           |
 | `imagePullSecrets`  | GitLab MCP image pull secrets                        | `[]`                     |
 
