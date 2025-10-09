@@ -56,7 +56,7 @@ spec:
             - name: {{ $key }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ default (printf "%s-env" (include "mcp-atlassian-helm.fullname" $)) .Values.secretEnv.name }}
+                  name: {{ default (printf "%s-env" (include "mcp-atlassian-helm.fullname" $)) $.Values.secretEnv.name }}
                   key: {{ $key }}
             {{- end }}
             {{- end }}
