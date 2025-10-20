@@ -79,16 +79,18 @@ When `ingress.path` differs from `/`, the annotation `nginx.ingress.kubernetes.i
 
 | Name                                   | Description                                                                                                  | Value |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ----- |
-| `auth.tokenSecret.create`              | Create and manage a Kubernetes secret containing the GitHub token                                            | `true` |
-| `auth.tokenSecret.name`                | Override name for the managed secret                                                                         | `""`  |
-| `auth.tokenSecret.key`                 | Key used inside the managed secret                                                                           | `GH_TOKEN` |
-| `auth.tokenSecret.value`               | GitHub token stored in the managed secret (set via `--set` or as a secret value)                             | `""`  |
-| `auth.tokenSecret.generate`            | Generate a random token when no value is provided (keeps existing value on upgrades)                         | `false` |
-| `auth.tokenSecret.existingSecret`      | Use an existing secret instead of creating one                                                               | `""`  |
-| `auth.tokenSecret.existingSecretKey`   | Key inside the existing secret that stores the GitHub token                                                  | `""`  |
-| `auth.tokenSecret.annotations`         | Extra annotations for the managed secret                                                                     | `{}`   |
+| `auth.tokenSecret.create`              | Create and manage a Kubernetes secret containing the GitHub token                        | `true` |
+| `auth.tokenSecret.name`                | Override name for the managed secret                        | `""`  |
+| `auth.tokenSecret.key`                 | Key used inside the managed secret                        | `GH_TOKEN` |
+| `auth.tokenSecret.value`               | **Plaintext** GitHub token stored in the managed secret (set via `--set` or as a secret value)          | `""`  |
+| `auth.tokenSecret.valueBase64`         | Base64-encoded GitHub token stored verbatim in the managed secret                                       | `""`  |
+| `auth.tokenSecret.generate`            | Generate a random token when no value is provided (keeps existing value on upgrades)                        | `false` |
+| `auth.tokenSecret.reuseExisting`       | Reuse a previously created secret value on upgrades (requires cluster access for the `lookup` helper)   | `true` |
+| `auth.tokenSecret.existingSecret`      | Use an existing secret instead of creating one                        | `""`  |
+| `auth.tokenSecret.existingSecretKey`   | Key inside the existing secret that stores the GitHub token                        | `""`  |
+| `auth.tokenSecret.annotations`         | Extra annotations for the managed secret                        | `{}`   |
 
-Exactly one of `auth.tokenSecret.value`, `auth.tokenSecret.generate`, or `auth.tokenSecret.existingSecret` must be set to supply a valid GitHub token.
+Exactly one of `auth.tokenSecret.value`, `auth.tokenSecret.valueBase64`, `auth.tokenSecret.generate`, or `auth.tokenSecret.existingSecret` must be set to supply a valid GitHub token.
 
 ### Environment parameters
 
@@ -134,8 +136,14 @@ helm install copilot-api ./charts/copilot-api \
   --set auth.tokenSecret.existingSecretKey=GH_TOKEN
 ```
 
-On upgrades the chart reuses the previously stored token by default so that the value is not regenerated or overwritten.
+On upgrades the chart reuses the previously stored token by default so that the value is not regenerated or overwritten. This behaviour relies on Helm's [`lookup`](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/#using-the-lookup-function) helper and therefore requires Helm 3 with live cluster connectivity. When rendering templates offline (for example via `helm template` in CI), set `auth.tokenSecret.reuseExisting=false` and provide the token explicitly.
+
+When setting `auth.tokenSecret.value`, provide the **plaintext** token; the chart encodes it before writing to the Kubernetes Secret. To supply a pre-encoded value, use `auth.tokenSecret.valueBase64` instead.
 
 ### Exposing the service
 
 Enable ingress by setting `ingress.enabled=true` and configure `ingress.hosts` and TLS as needed. The service listens on port `4141`, matching the default Copilot API port.
+
+### Adding additional secret environment variables
+
+Keys defined under `secretEnv.data` must follow standard environment variable naming rules (`^[A-Za-z_][A-Za-z0-9_]*$`). Invalid keys will cause chart rendering to fail to prevent generating unusable Kubernetes secrets.

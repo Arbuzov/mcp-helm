@@ -63,6 +63,9 @@ spec:
             {{- end }}
             {{- if .Values.secretEnv.data }}
             {{- range $key, $val := .Values.secretEnv.data }}
+            {{- if not (regexMatch "^[A-Za-z_][A-Za-z0-9_]*$" $key) }}
+              {{- fail (printf "secretEnv.data key '%s' must match ^[A-Za-z_][A-Za-z0-9_]*$" $key) -}}
+            {{- end }}
             - name: {{ $key }}
               valueFrom:
                 secretKeyRef:
