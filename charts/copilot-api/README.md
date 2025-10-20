@@ -59,7 +59,7 @@ helm delete copilot-api
 | -------------------- | -------------------------------------- | ----------- |
 | `service.type`       | Kubernetes service type                | `ClusterIP` |
 | `service.port`       | Service port                           | `4141`      |
-| `service.targetPort` | Container port exposed by the service | `4141`      |
+| `service.targetPort` | Container or named port exposed by the service (referenced by the ingress backend) | `4141`      |
 
 ### Ingress parameters
 

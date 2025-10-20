@@ -25,6 +25,7 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 4141
+  # May be a numeric container port or a named port exposed by the container.
   targetPort: 4141
 
 ingress:

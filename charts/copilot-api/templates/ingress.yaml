@@ -1,6 +1,8 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "mcp-copilot-api-helm.fullname" . -}}
 {{- $svcTargetPort := default .Values.service.port .Values.service.targetPort -}}
+{{- $svcTargetPortString := printf "%v" $svcTargetPort -}}
+{{- $isTargetPortNumeric := regexMatch "^[0-9]+$" $svcTargetPortString -}}
 {{- $className := .Values.ingress.className -}}
 {{- $classAnnotation := "kubernetes.io/ingress.class" -}}
 {{- $kubeVersion := .Capabilities.KubeVersion.Version -}}
@@ -58,10 +60,14 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: {{ $svcTargetPort }}
+                  {{- if $isTargetPortNumeric }}
+                  number: {{ $svcTargetPortString }}
+                  {{- else }}
+                  name: {{ $svcTargetPortString | quote }}
+                  {{- end }}
               {{- else }}
               serviceName: {{ $fullName }}
-              servicePort: {{ $svcTargetPort }}
+              servicePort: {{ if $isTargetPortNumeric }}{{ $svcTargetPortString }}{{ else }}{{ $svcTargetPortString | quote }}{{ end }}
               {{- end }}
     {{- else }}
     - host: {{ . | quote }}
@@ -76,10 +82,14 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: {{ $svcTargetPort }}
+                  {{- if $isTargetPortNumeric }}
+                  number: {{ $svcTargetPortString }}
+                  {{- else }}
+                  name: {{ $svcTargetPortString | quote }}
+                  {{- end }}
               {{- else }}
               serviceName: {{ $fullName }}
-              servicePort: {{ $svcTargetPort }}
+              servicePort: {{ if $isTargetPortNumeric }}{{ $svcTargetPortString }}{{ else }}{{ $svcTargetPortString | quote }}{{ end }}
               {{- end }}
     {{- end }}
     {{- end }}
