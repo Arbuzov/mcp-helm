@@ -1,0 +1,71 @@
+replicaCount: 1
+
+image:
+  repository: nghyane/copilot-api
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 4141
+  targetPort: 4141
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  path: /
+  pathType: Prefix
+  hosts:
+    - copilot-api.local
+  tls: []
+
+resources: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: ""
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+env: {}
+
+envSecrets: {}
+
+secretEnv:
+  data: {}
+
+auth:
+  tokenSecret:
+    create: true
+    name: ""
+    key: GH_TOKEN
+    value: ""
+    generate: false
+    existingSecret: ""
+    existingSecretKey: ""
+    annotations: {}
