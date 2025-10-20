@@ -69,6 +69,7 @@ auth:
     valueBase64: ""
     generate: false
     reuseExisting: true
+    forceRegenerate: false
     existingSecret: ""
     existingSecretKey: ""
     annotations: {}

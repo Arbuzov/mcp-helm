@@ -86,6 +86,7 @@ When `ingress.path` differs from `/`, the annotation `nginx.ingress.kubernetes.i
 | `auth.tokenSecret.valueBase64`         | Base64-encoded GitHub token stored verbatim in the managed secret                                       | `""`  |
 | `auth.tokenSecret.generate`            | Generate a random token when no value is provided (keeps existing value on upgrades)                        | `false` |
 | `auth.tokenSecret.reuseExisting`       | Reuse a previously created secret value on upgrades (requires cluster access for the `lookup` helper)   | `true` |
+| `auth.tokenSecret.forceRegenerate`     | Ignore any existing secret data and regenerate/write the value during this upgrade                      | `false` |
 | `auth.tokenSecret.existingSecret`      | Use an existing secret instead of creating one                        | `""`  |
 | `auth.tokenSecret.existingSecretKey`   | Key inside the existing secret that stores the GitHub token                        | `""`  |
 | `auth.tokenSecret.annotations`         | Extra annotations for the managed secret                        | `{}`   |
@@ -136,7 +137,7 @@ helm install copilot-api ./charts/copilot-api \
   --set auth.tokenSecret.existingSecretKey=GH_TOKEN
 ```
 
-On upgrades the chart reuses the previously stored token by default so that the value is not regenerated or overwritten. This behaviour relies on Helm's [`lookup`](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/#using-the-lookup-function) helper and therefore requires Helm 3 with live cluster connectivity. When rendering templates offline (for example via `helm template` in CI), set `auth.tokenSecret.reuseExisting=false` and provide the token explicitly.
+On upgrades the chart reuses the previously stored token by default so that the value is not regenerated or overwritten. This behaviour relies on Helm's [`lookup`](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/#using-the-lookup-function) helper and therefore requires Helm 3 with live cluster connectivity. When rendering templates offline (for example via `helm template` in CI), set `auth.tokenSecret.reuseExisting=false` and provide the token explicitly. To intentionally rotate the managed secret, set `auth.tokenSecret.forceRegenerate=true` alongside either a supplied token or `auth.tokenSecret.generate=true` so the release writes a fresh value even if one already exists.
 
 When setting `auth.tokenSecret.value`, provide the **plaintext** token; the chart encodes it before writing to the Kubernetes Secret. To supply a pre-encoded value, use `auth.tokenSecret.valueBase64` instead.
 

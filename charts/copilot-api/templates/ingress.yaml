@@ -1,5 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "mcp-copilot-api-helm.fullname" . -}}
+{{- /* If both service.targetPort and service.port are set, service.targetPort takes precedence because default returns the first non-empty value. */ -}}
 {{- $svcTargetPort := default .Values.service.port .Values.service.targetPort -}}
 {{- $svcTargetPortString := printf "%v" $svcTargetPort -}}
 {{- $isTargetPortNumeric := regexMatch "^[0-9]+$" $svcTargetPortString -}}

@@ -40,7 +40,8 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- $imageTag := default "" .Values.image.tag -}}
+          image: "{{ .Values.image.repository }}:{{ ternary $imageTag .Chart.AppVersion (ne $imageTag "") }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- $hasEnv := or $tokenSecretConfigured .Values.env .Values.envSecrets .Values.secretEnv.data -}}
           {{- if $hasEnv }}
