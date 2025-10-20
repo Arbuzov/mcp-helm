@@ -16,7 +16,7 @@ serviceAccount:
 
 crawler:
   image:
-    repository: ghcr.io/modelcontextprotocol/search-crawler
+    repository: ghcr.io/modelcontextprotocol/search
     tag: latest
     pullPolicy: IfNotPresent
   service:
