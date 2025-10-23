@@ -7,10 +7,8 @@
 {{- include "mcp-library.ingressUseRegex" . }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
-{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
 {{- else -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
@@ -38,7 +36,7 @@ spec:
   rules:
     {{- $ingressPath := include "mcp-library.ingressPath" . }}
     {{- range .Values.ingress.hosts }}
-    - host: {{ if eq . "*" }}""{{ else }}{{ . | quote }}{{ end }}
+    -{{- if ne . "*" }} host: {{ . | quote }}{{- end }}
       http:
         paths:
           - path: {{ $ingressPath }}

@@ -46,7 +46,7 @@ The command removes all Kubernetes components associated with the chart and dele
 | Name               | Description                                          | Value                               |
 | ------------------ | ---------------------------------------------------- | ----------------------------------- |
 | `image.repository` | MCP image repository                                 | `mcr.microsoft.com/playwright/mcp`  |
-| `image.tag`        | MCP image tag (immutable tags are recommended)       | `latest`                            |
+| `image.tag`        | MCP image tag (immutable tags are recommended)       | `v0.0.43`                           |
 | `image.pullPolicy` | MCP image pull policy                                | `IfNotPresent`                      |
 | `imagePullSecrets` | MCP image pull secrets                               | `[]`                                |
 
@@ -80,6 +80,10 @@ The command removes all Kubernetes components associated with the chart and dele
 
 When `ingress.path` is not `/`, the annotation `nginx.ingress.kubernetes.io/use-regex: "true"` is automatically added.
 
+When you set an ingress host to `"*"`, the chart omits the `host` field from the generated
+Ingress rule so that controllers that support wildcard routing (for example, NGINX) can
+match any hostname. Some ingress controllers may require explicit hostnames instead.
+
 ### Environment variables
 
 | Name         | Description                                          | Value |
@@ -87,6 +91,12 @@ When `ingress.path` is not `/`, the annotation `nginx.ingress.kubernetes.io/use-
 | `env`        | Environment variables to set on the container        | `{}`  |
 | `envSecrets` | Environment variables sourced from existing secrets  | `{}`  |
 | `secretEnv`  | Environment variables to create from chart-managed secret | `{}` |
+
+> [!IMPORTANT]
+> The `secretEnv` section is intended for quick experiments only. For production
+> deployments, prefer sourcing sensitive data from existing Kubernetes Secrets (via
+> `envSecrets`) or from an external secret manager to avoid storing credentials in
+> plaintext values files.
 
 ### Command line arguments
 

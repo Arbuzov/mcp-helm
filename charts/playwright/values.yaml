@@ -7,8 +7,8 @@ replicaCount: 1
 image:
   repository: mcr.microsoft.com/playwright/mcp
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  # Overrides the image tag. Defaults to the chart appVersion (v0.0.43).
+  tag: "v0.0.43"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -89,6 +89,8 @@ envSecrets: {}
 
 # Secret configuration for sensitive data managed by the chart
 secretEnv:
+  # ⚠️ Avoid storing production secrets directly in values files. Prefer referencing
+  # existing secrets via `envSecrets` or external secret managers.
   data: {}
 
 # Additional CLI arguments appended after the managed port/path flags
