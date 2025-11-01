@@ -1,0 +1,41 @@
+Thank you for installing the Playwright MCP chart!
+
+1. Check the release status and pod readiness:
+   helm status {{ .Release.Name }}
+   kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }}
+
+2. Access the SSE endpoint exposed by the deployment:
+{{- $path := include "mcp-library.ingressPath" . }}
+{{- if .Values.ingress.enabled }}
+   The ingress controller will route external traffic to the service. Once the ingress
+   resource is ready, connect using:
+{{- $scheme := ternary "https" "http" (gt (len .Values.ingress.tls) 0) }}
+{{- range .Values.ingress.hosts }}
+{{- if eq . "*" }}
+   - {{ $scheme }}://<your-hostname>{{ $path }}
+{{- else }}
+   - {{ $scheme }}://{{ . }}{{ $path }}
+{{- end }}
+{{- end }}
+{{- else if contains "LoadBalancer" .Values.service.type }}
+   It may take a few minutes for the LoadBalancer IP to be available.
+   You can watch the status of the service by running:
+     kubectl get svc -n {{ .Release.Namespace }} -w {{ include "mcp-playwright-helm.fullname" . }}
+   Once assigned, the endpoint will be:
+     http://$(kubectl get svc -n {{ .Release.Namespace }} {{ include "mcp-playwright-helm.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}{.status.loadBalancer.ingress[0].hostname}'):{{ .Values.service.port }}{{ $path }}
+{{- else if contains "NodePort" .Values.service.type }}
+   The service is exposed on each node:
+     NODE_PORT=$(kubectl get svc -n {{ .Release.Namespace }} {{ include "mcp-playwright-helm.fullname" . }} -o jsonpath='{.spec.ports[0].nodePort}')
+     NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
+     echo http://$NODE_IP:$NODE_PORT{{ $path }}
+{{- else }}
+   Port-forward the service for local access:
+     kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "mcp-playwright-helm.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.targetPort }}
+   Then connect to http://127.0.0.1:{{ .Values.service.port }}{{ $path }}
+{{- end }}
+
+3. (Optional) Run the built-in connectivity test once the pod is ready:
+   helm test {{ .Release.Name }}
+
+4. Need to override CLI options? Append them via `extraArgs` and environment variables
+   via `env`, `envSecrets`, or `secretEnv` values.
