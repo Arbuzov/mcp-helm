@@ -84,14 +84,14 @@ When `ingress.path` differs from `/`, the annotation `nginx.ingress.kubernetes.i
 | `auth.tokenSecret.key`                 | Key used inside the managed secret                        | `GH_TOKEN` |
 | `auth.tokenSecret.value`               | **Plaintext** GitHub token stored in the managed secret (set via `--set` or as a secret value)          | `""`  |
 | `auth.tokenSecret.valueBase64`         | Base64-encoded GitHub token stored verbatim in the managed secret                                       | `""`  |
-| `auth.tokenSecret.generate`            | Generate a random token when no value is provided (keeps existing value on upgrades)                        | `false` |
+| `auth.tokenSecret.generate`            | Generate a random placeholder token when no value is provided (keeps existing value on upgrades)                        | `true` |
 | `auth.tokenSecret.reuseExisting`       | Reuse a previously created secret value on upgrades (requires cluster access for the `lookup` helper)   | `true` |
 | `auth.tokenSecret.forceRegenerate`     | Ignore any existing secret data and regenerate/write the value during this upgrade                      | `false` |
 | `auth.tokenSecret.existingSecret`      | Use an existing secret instead of creating one                        | `""`  |
 | `auth.tokenSecret.existingSecretKey`   | Key inside the existing secret that stores the GitHub token                        | `""`  |
 | `auth.tokenSecret.annotations`         | Extra annotations for the managed secret                        | `{}`   |
 
-Exactly one of `auth.tokenSecret.value`, `auth.tokenSecret.valueBase64`, `auth.tokenSecret.generate`, or `auth.tokenSecret.existingSecret` must be set to supply a valid GitHub token.
+Provide the GitHub token via one of `auth.tokenSecret.value`, `auth.tokenSecret.valueBase64`, enabling `auth.tokenSecret.generate`, or referencing `auth.tokenSecret.existingSecret`. The chart defaults to `auth.tokenSecret.generate=true` to produce a placeholder secret for linting and testing, but you should supply a real token for production deployments.
 
 ### Environment parameters
 
@@ -121,7 +121,7 @@ Exactly one of `auth.tokenSecret.value`, `auth.tokenSecret.valueBase64`, `auth.t
 
 ### Providing the GitHub token
 
-The Copilot API proxy requires a GitHub token with Copilot access. By default the chart creates a secret named `<release>-copilot-api-token` that stores the value provided via `auth.tokenSecret.value`. To avoid storing the token in plaintext in your values file, supply it at install time:
+The Copilot API proxy requires a GitHub token with Copilot access. By default the chart creates a secret named `<release>-copilot-api-token` with a randomly generated placeholder value. Override this placeholder by providing the real token at install time:
 
 ```bash
 helm install copilot-api ./charts/copilot-api \

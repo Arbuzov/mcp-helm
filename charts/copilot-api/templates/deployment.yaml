@@ -34,12 +34,16 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "mcp-copilot-api-helm.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
+          {{- with .Values.securityContext }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- $imageTag := default "" .Values.image.tag -}}
           image: "{{ .Values.image.repository }}:{{ ternary $imageTag .Chart.AppVersion (ne $imageTag "") }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}

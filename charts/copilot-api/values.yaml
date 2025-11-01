@@ -67,7 +67,8 @@ auth:
     key: GH_TOKEN
     value: ""
     valueBase64: ""
-    generate: false
+    # Generates a placeholder value when no token is supplied. Override with a real token in production.
+    generate: true
     reuseExisting: true
     forceRegenerate: false
     existingSecret: ""
