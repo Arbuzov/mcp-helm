@@ -1,0 +1,13 @@
+apiVersion: v2
+name: copilot-api
+description: A Helm chart for deploying the Copilot API proxy server
+icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+
+type: application
+
+version: 0.1.1
+dependencies:
+  - name: mcp-library
+    version: 0.1.4
+    repository: https://arbuzov.github.io/mcp-helm/
+appVersion: "latest"
