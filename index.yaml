@@ -664,6 +664,22 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-library-0.1.2/mcp-library-0.1.2.tgz
     version: 0.1.2
+  mcp-playwright:
+  - apiVersion: v2
+    appVersion: v0.0.43
+    created: "2025-11-01T17:54:47.365047467Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying the Playwright MCP server
+    digest: f17a60a18792e9662bc7a55e9953bb85f4c8db5e4d7925f7751fae535c37ed6e
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    name: mcp-playwright
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-playwright-0.1.1/mcp-playwright-0.1.1.tgz
+    version: 0.1.1
   mcpo:
   - apiVersion: v2
     appVersion: main
@@ -904,4 +920,4 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/search-helm-chart-0.1.0/search-helm-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2025-10-20T07:51:35.054549579Z"
+generated: "2025-11-01T17:54:47.365136082Z"
