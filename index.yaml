@@ -1,5 +1,21 @@
 apiVersion: v1
 entries:
+  copilot-api:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2025-11-09T20:59:09.040667568Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying the Copilot API proxy server
+    digest: 8fe4396d7bf8cff8ff11e3f06fca3da00c3f94afbcbd217eb8ca6b414a2a7a86
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    name: copilot-api
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/copilot-api-0.1.1/copilot-api-0.1.1.tgz
+    version: 0.1.1
   mcp-atlassian:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -920,4 +936,4 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/search-helm-chart-0.1.0/search-helm-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2025-11-01T17:54:47.365136082Z"
+generated: "2025-11-09T20:59:09.181770653Z"
