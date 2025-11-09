@@ -1,8 +1,16 @@
 1. Get the application URL by running these commands:
 {{- if .Values.ingress.enabled }}
+{{- $ingressPath := include "mcp-library.ingressPath" . }}
 {{- range $host := .Values.ingress.hosts }}
-  {{- range .paths }}
-  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  {{- if kindIs "map" $host }}
+    {{- $hostName := $host.host | default "" }}
+    {{- range $path := $host.paths }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $hostName }}{{ $path.path | default $ingressPath }}
+    {{- end }}
+  {{- else if eq (toString $host) "*" }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://<ingress-host>{{ $ingressPath }}
+  {{- else }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host }}{{ $ingressPath }}
   {{- end }}
 {{- end }}
 {{- else if contains "NodePort" .Values.service.type }}
