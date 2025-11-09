@@ -1,0 +1,111 @@
+{{- $tokenSecretConfigured := or .Values.auth.tokenSecret.existingSecret .Values.auth.tokenSecret.create -}}
+{{- if not $tokenSecretConfigured -}}
+{{- fail "Either set auth.tokenSecret.existingSecret or enable auth.tokenSecret.create" -}}
+{{- end -}}
+{{- $tokenSecretName := include "mcp-copilot-api-helm.tokenSecretName" . -}}
+{{- $tokenSecretKey := include "mcp-copilot-api-helm.tokenSecretKey" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mcp-copilot-api-helm.fullname" . }}
+  labels:
+    {{- include "mcp-copilot-api-helm.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "mcp-copilot-api-helm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "mcp-copilot-api-helm.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "mcp-copilot-api-helm.serviceAccountName" . }}
+      {{- if not (empty .Values.podSecurityContext) }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- if not (empty .Values.securityContext) }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- end }}
+          {{- $imageTag := default "" .Values.image.tag }}
+          image: "{{ .Values.image.repository }}:{{ ternary $imageTag .Chart.AppVersion (ne $imageTag "") }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- $hasEnv := or $tokenSecretConfigured .Values.env .Values.envSecrets .Values.secretEnv.data }}
+          {{- if $hasEnv }}
+          env:
+            - name: {{ $tokenSecretKey }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $tokenSecretName }}
+                  key: {{ $tokenSecretKey }}
+            {{- range $key, $val := .Values.env }}
+            - name: {{ $key }}
+              value: {{ quote $val }}
+            {{- end }}
+            {{- range $key, $val := .Values.envSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $val.secretName }}
+                  key: {{ $val.secretKey }}
+            {{- end }}
+            {{- if .Values.secretEnv.data }}
+            {{- range $key, $val := .Values.secretEnv.data }}
+            {{- if not (regexMatch "^[A-Za-z_][A-Za-z0-9_]*$" $key) }}
+              {{- fail (printf "secretEnv.data key '%s' must match ^[A-Za-z_][A-Za-z0-9_]*$" $key) -}}
+            {{- end }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "mcp-copilot-api-helm.fullname" $ }}
+                  key: {{ $key }}
+            {{- end }}
+            {{- end }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,97 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "mcp-copilot-api-helm.fullname" . -}}
+{{- /* If both service.targetPort and service.port are set, service.targetPort takes precedence because default returns the first non-empty value. */ -}}
+{{- $svcTargetPort := default .Values.service.port .Values.service.targetPort -}}
+{{- $svcTargetPortString := printf "%v" $svcTargetPort -}}
+{{- $isTargetPortNumeric := regexMatch "^[0-9]+$" $svcTargetPortString -}}
+{{- $className := .Values.ingress.className -}}
+{{- $classAnnotation := "kubernetes.io/ingress.class" -}}
+{{- $kubeVersion := .Capabilities.KubeVersion.Version -}}
+{{- $supportsIngressClass := semverCompare ">=1.18-0" $kubeVersion -}}
+{{- $pathType := .Values.ingress.pathType -}}
+{{- $hasPathType := and $pathType $supportsIngressClass -}}
+{{- if $className }}
+  {{- if not (hasKey .Values.ingress.annotations $classAnnotation) }}
+    {{- $_ := set .Values.ingress.annotations $classAnnotation $className }}
+  {{- end }}
+{{- end }}
+{{- include "mcp-library.ingressUseRegex" . }}
+{{- if semverCompare ">=1.19-0" $kubeVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" $kubeVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "mcp-copilot-api-helm.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if and $className $supportsIngressClass }}
+  ingressClassName: {{ $className }}
+  {{- end }}
+  {{- if .Values.ingress.tls }}
+  tls:
+    {{- range .Values.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- $ingressPath := include "mcp-library.ingressPath" . }}
+    {{- range .Values.ingress.hosts }}
+    {{- if eq . "*" }}
+    - http:
+        paths:
+          - path: {{ $ingressPath }}
+            {{- if $hasPathType }}
+            pathType: {{ $pathType }}
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $kubeVersion }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  {{- if $isTargetPortNumeric }}
+                  number: {{ $svcTargetPortString }}
+                  {{- else }}
+                  name: {{ $svcTargetPortString | quote }}
+                  {{- end }}
+              {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ if $isTargetPortNumeric }}{{ $svcTargetPortString }}{{ else }}{{ $svcTargetPortString | quote }}{{ end }}
+              {{- end }}
+    {{- else }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+          - path: {{ $ingressPath }}
+            {{- if $hasPathType }}
+            pathType: {{ $pathType }}
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $kubeVersion }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  {{- if $isTargetPortNumeric }}
+                  number: {{ $svcTargetPortString }}
+                  {{- else }}
+                  name: {{ $svcTargetPortString | quote }}
+                  {{- end }}
+              {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ if $isTargetPortNumeric }}{{ $svcTargetPortString }}{{ else }}{{ $svcTargetPortString | quote }}{{ end }}
+              {{- end }}
+    {{- end }}
+    {{- end }}
+{{- end }}
