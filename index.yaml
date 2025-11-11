@@ -561,6 +561,21 @@ entries:
   mcp-kubernetes:
   - apiVersion: v2
     appVersion: latest
+    created: "2025-11-11T11:37:16.954934747Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying the MCP server
+    digest: 60bf3470d553bf06c96b7a448161505a2e3a586dacb86c44873783e2440f0d37
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    name: mcp-kubernetes
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-kubernetes-0.2.7/mcp-kubernetes-0.2.7.tgz
+    version: 0.2.7
+  - apiVersion: v2
+    appVersion: latest
     created: "2025-11-09T21:06:06.816406792Z"
     dependencies:
     - name: mcp-library
@@ -951,4 +966,4 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/search-helm-chart-0.1.0/search-helm-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2025-11-09T21:06:06.816558333Z"
+generated: "2025-11-11T11:37:16.955055382Z"
