@@ -1,0 +1,62 @@
+{{- if .Values.rbac.create }}
+{{- if and (not .Values.serviceAccount.create) (not .Values.serviceAccount.name) }}
+{{- fail (printf "rbac.create=true requires either serviceAccount.create=true or serviceAccount.name to reference an existing ServiceAccount.\nTo resolve:\n- Set serviceAccount.create=true to create a new ServiceAccount automatically, or\n- Set serviceAccount.name=<existing-service-account-name> to use an existing ServiceAccount.\nExamples:\n  serviceAccount:\n    create: true\n# OR\n  serviceAccount:\n    name: my-existing-sa") }}
+{{- end }}
+{{- if and .Values.rbac.useClusterAdmin .Values.rbac.existingClusterRole }}
+{{- fail "Configuration error: Both rbac.useClusterAdmin and rbac.existingClusterRole are set. These options are mutually exclusive because useClusterAdmin grants cluster-admin while existingClusterRole binds to a specific role. Set only one of them (either rbac.useClusterAdmin=true or rbac.existingClusterRole=<role-name>)." }}
+{{- end }}
+{{- $fullName := include "mcp-kubernetes-helm.fullname" . -}}
+{{- $saName := include "mcp-kubernetes-helm.serviceAccountName" . -}}
+{{- $clusterRole := dict "name" "" "create" false -}}
+{{- if .Values.rbac.useClusterAdmin -}}
+{{- $_ := set $clusterRole "name" "cluster-admin" -}}
+{{- else if .Values.rbac.existingClusterRole -}}
+{{- $_ := set $clusterRole "name" .Values.rbac.existingClusterRole -}}
+{{- else -}}
+{{- $_ := set $clusterRole "name" (default (printf "%s-clusterrole" $fullName) .Values.rbac.clusterRole.name) -}}
+{{- $_ := set $clusterRole "create" true -}}
+{{- end -}}
+{{- $clusterRoleBindingName := default (printf "%s-clusterrolebinding" $fullName) .Values.rbac.clusterRoleBinding.name -}}
+{{- if $clusterRole.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $clusterRole.name }}
+  labels:
+    {{- include "mcp-kubernetes-helm.labels" . | nindent 4 }}
+  {{- with .Values.rbac.clusterRole.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+rules:
+  {{- if .Values.rbac.clusterRole.rules }}
+  {{- toYaml .Values.rbac.clusterRole.rules | nindent 2 }}
+  {{- else }}
+  - apiGroups:
+      - "*"
+    resources:
+      - "*"
+    verbs:
+      - "*"
+  {{- end }}
+---
+{{- end }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ $clusterRoleBindingName }}
+  labels:
+    {{- include "mcp-kubernetes-helm.labels" . | nindent 4 }}
+  {{- with .Values.rbac.clusterRoleBinding.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ $clusterRole.name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ $saName }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}
