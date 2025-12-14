@@ -1,0 +1,92 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/cabinlab/claude-code-api
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  ports:
+    http:
+      port: 8000
+      targetPort: 8000
+    https:
+      enabled: true
+      port: 8443
+      targetPort: 8443
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  path: /
+  pathType: Prefix
+  hosts:
+    - claude-code-api.local
+  tls: []
+
+resources: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: ""
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+app:
+  port: 8000
+  httpsPort: 8443
+  nodeEnv: production
+  logLevel: info
+
+auth:
+  secret:
+    create: true
+    name: ""
+    annotations: {}
+
+  adminPassword:
+    key: ADMIN_PASSWORD
+    value: changeme
+    valueBase64: ""
+    existingSecret: ""
+    existingSecretKey: ADMIN_PASSWORD
+
+  claudeOAuthToken:
+    key: CLAUDE_CODE_OAUTH_TOKEN
+    value: ""
+    valueBase64: ""
+    existingSecret: ""
+    existingSecretKey: CLAUDE_CODE_OAUTH_TOKEN
+
+env: {}
+
+envSecrets: {}
+
+secretEnv:
+  data: {}

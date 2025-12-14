@@ -5,6 +5,7 @@ This repository contains Helm charts used by the MCP project. All charts are sto
 ## Available charts
 
 - **atlassian** – Helm chart moved from the repository root to `charts/atlassian`. See [its README](charts/atlassian/README.md) for details.
+- **claude-code-api** – Helm chart for the Claude Code OpenAI-compatible gateway. See [its README](charts/claude-code-api/README.md) for usage information.
 - **gitlab** – Helm chart for the GitLab MCP server. See [its README](charts/gitlab/README.md) for usage information.
 - **kubernetes** – Helm chart for running the MCP server locally. See [its README](charts/kubernetes/README.md) for details.
 - **homeassistant** – Helm chart for deploying the Home Assistant MCP server. See [its README](charts/homeassistant/README.md).
