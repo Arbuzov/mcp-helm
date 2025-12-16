@@ -1,0 +1,13 @@
+apiVersion: v2
+name: claude-code-api
+description: A Helm chart for deploying the Claude Code OpenAI-compatible API gateway
+icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+
+type: application
+
+version: 0.1.0
+dependencies:
+  - name: mcp-library
+    version: 0.1.4
+    repository: https://arbuzov.github.io/mcp-helm/
+appVersion: "0.1.0"
