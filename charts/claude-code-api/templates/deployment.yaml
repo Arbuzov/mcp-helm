@@ -1,6 +1,14 @@
-{{- $tokenProvided := or (ne (trim .Values.auth.claudeOAuthToken.value) "") (ne (trim .Values.auth.claudeOAuthToken.valueBase64) "") (ne (trim .Values.auth.claudeOAuthToken.existingSecret) "") -}}
-{{- if not $tokenProvided -}}
+{{- $tokenFromExisting := ne (trim .Values.auth.claudeOAuthToken.existingSecret) "" -}}
+{{- $tokenValueProvided := or (ne (trim .Values.auth.claudeOAuthToken.value) "") (ne (trim .Values.auth.claudeOAuthToken.valueBase64) "") -}}
+{{- if and (not $tokenValueProvided) (not $tokenFromExisting) -}}
 {{- fail "Provide Claude OAuth token via auth.claudeOAuthToken.value, valueBase64, or existingSecret" -}}
+{{- end -}}
+{{- if and $tokenFromExisting (eq (trim (.Values.auth.claudeOAuthToken.existingSecretKey | default "")) "") -}}
+{{- fail "Set auth.claudeOAuthToken.existingSecretKey when referencing an existing OAuth token secret" -}}
+{{- end -}}
+{{- $adminFromExisting := ne (trim .Values.auth.adminPassword.existingSecret) "" -}}
+{{- if and $adminFromExisting (eq (trim (.Values.auth.adminPassword.existingSecretKey | default "")) "") -}}
+{{- fail "Set auth.adminPassword.existingSecretKey when referencing an existing admin password secret" -}}
 {{- end -}}
 apiVersion: apps/v1
 kind: Deployment

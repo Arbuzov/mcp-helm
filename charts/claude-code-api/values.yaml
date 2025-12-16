@@ -72,7 +72,7 @@ auth:
 
   adminPassword:
     key: ADMIN_PASSWORD
-    value: changeme
+    value: ""
     valueBase64: ""
     existingSecret: ""
     existingSecretKey: ADMIN_PASSWORD

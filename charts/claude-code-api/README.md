@@ -94,7 +94,7 @@ helm delete claude-code-api
 | `auth.secret.name` | Override name for the managed secret | `""` |
 | `auth.secret.annotations` | Extra annotations for the managed secret | `{}` |
 | `auth.adminPassword.key` | Environment variable key for the admin password | `ADMIN_PASSWORD` |
-| `auth.adminPassword.value` | **Plaintext** admin password stored in the managed secret | `changeme` |
+| `auth.adminPassword.value` | **Plaintext** admin password stored in the managed secret | `""` |
 | `auth.adminPassword.valueBase64` | Base64-encoded admin password stored verbatim in the managed secret | `""` |
 | `auth.adminPassword.existingSecret` | Existing secret to read the admin password from | `""` |
 | `auth.adminPassword.existingSecretKey` | Key inside the existing admin secret | `ADMIN_PASSWORD` |
@@ -133,6 +133,8 @@ helm delete claude-code-api
 ### Providing the Claude OAuth token and admin password
 
 The service requires both an admin password for the management UI and a Claude OAuth token used to generate client API keys. Provide these values via `auth.*` settings. By default the chart creates a secret named `<release>-auth` and writes the supplied credentials into it. To reuse an existing secret, set `auth.secret.create=false` and configure `auth.adminPassword.existingSecret` and `auth.claudeOAuthToken.existingSecret` with the appropriate keys.
+
+When the chart manages the secret, `auth.adminPassword.value` (or `valueBase64`) **must** be set to a non-empty value; the template rendering fails otherwise. If you point to existing secrets, you must also set `auth.adminPassword.existingSecretKey` and `auth.claudeOAuthToken.existingSecretKey` so the chart reads the correct keys.
 
 When setting `*.value`, supply the **plaintext** credential; the chart encodes it before writing to the Kubernetes Secret. To supply a pre-encoded value, use the corresponding `*.valueBase64` setting instead.
 
