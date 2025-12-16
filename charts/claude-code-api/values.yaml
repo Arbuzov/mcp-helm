@@ -66,7 +66,7 @@ app:
 
 auth:
   secret:
-    create: true
+    create: false
     name: ""
     annotations: {}
 
@@ -74,14 +74,14 @@ auth:
     key: ADMIN_PASSWORD
     value: ""
     valueBase64: ""
-    existingSecret: ""
+    existingSecret: "claude-code-api-auth"
     existingSecretKey: ADMIN_PASSWORD
 
   claudeOAuthToken:
     key: CLAUDE_CODE_OAUTH_TOKEN
     value: ""
     valueBase64: ""
-    existingSecret: ""
+    existingSecret: "claude-code-api-auth"
     existingSecretKey: CLAUDE_CODE_OAUTH_TOKEN
 
 env: {}
