@@ -144,7 +144,13 @@ To access the MCP server from outside the cluster, you can:
 
 ### Granting Kubernetes permissions
 
-When `mcp-kubernetes` runs inside the cluster that it manages, it needs elevated Kubernetes API access. RBAC resources are created by default, granting full-cluster access through a release-scoped ClusterRole and ClusterRoleBinding. To reuse the built-in `cluster-admin` ClusterRole, set:
+When `mcp-kubernetes` runs inside the cluster that it manages, it needs elevated Kubernetes API access. The chart enables this by default with a dedicated ServiceAccount plus a release-scoped ClusterRole and ClusterRoleBinding that grant full-cluster permissions. A standard installation therefore has everything required to talk to the Kubernetes API without any extra flags:
+
+```bash
+helm install mcp-kubernetes ./charts/kubernetes
+```
+
+If you prefer to bind to the built-in `cluster-admin` ClusterRole instead of the generated one, set:
 
 ```yaml
 rbac:
