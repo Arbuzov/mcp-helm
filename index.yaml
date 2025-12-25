@@ -3,6 +3,22 @@ entries:
   claude-code-api:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2025-12-25T09:33:34.115030971Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying the Claude Code OpenAI-compatible API
+      gateway
+    digest: b181ac511acad1a16a4f2c646f7c4640c10c7f8ab841d688265b71eeaf606b17
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    name: claude-code-api
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/claude-code-api-0.1.1/claude-code-api-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2025-12-16T17:45:56.270843356Z"
     dependencies:
     - name: mcp-library
@@ -983,4 +999,4 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/search-helm-chart-0.1.0/search-helm-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2025-12-16T17:45:56.270981174Z"
+generated: "2025-12-25T09:33:34.288363806Z"
