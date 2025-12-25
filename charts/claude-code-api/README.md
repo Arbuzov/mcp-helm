@@ -41,7 +41,7 @@ helm delete claude-code-api
 
 | Name | Description | Value |
 | --- | --- | --- |
-| `image.repository` | Container image repository | `ghcr.io/cabinlab/claude-code-api` |
+| `image.repository` | Container image repository | `arbuzov/claude-code-api` |
 | `image.tag` | Container image tag (defaults to chart `appVersion` when empty) | `""` |
 | `image.pullPolicy` | Container image pull policy | `IfNotPresent` |
 | `imagePullSecrets` | Kubernetes image pull secrets | `[]` |
