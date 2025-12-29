@@ -36,6 +36,7 @@ jobs:
       ACTION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.action || 'release' }}
       CHART: ${{ github.event.inputs.chart }}
       VERSION: ${{ github.event.inputs.version }}
+    if: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.action == 'delete' || github.event.inputs.action == 'reupload') }}
     steps:
       - name: Validate inputs
         if: ${{ env.ACTION == 'delete' || env.ACTION == 'reupload' }}
@@ -59,12 +60,17 @@ jobs:
           repo="${GITHUB_REPOSITORY}"
 
           echo "Deleting GitHub release/tag ${tag} in ${repo}..."
-          gh release delete "${tag}" --cleanup-tag --yes || true
+          if gh release view "${tag}" >/dev/null 2>&1; then
+            gh release delete "${tag}" --cleanup-tag --yes
+          else
+            echo "Release ${tag} not found; skipping deletion."
+          fi
 
           tmpdir="$(mktemp -d)"
           trap 'rm -rf "${tmpdir}"' EXIT
 
-          git -C "${tmpdir}" clone --branch gh-pages --depth 1 "https://github.com/${repo}.git" gh-pages
+          git -C "${tmpdir}" clone --branch gh-pages --depth 1 "https://github.com/${repo}.git" gh-pages \
+            || { echo "gh-pages branch not found; nothing to clean up."; exit 0; }
           cd "${tmpdir}/gh-pages"
 
           rm -f "${CHART}-${VERSION}.tgz" "${CHART}-${VERSION}.tgz.prov"
@@ -85,7 +91,7 @@ jobs:
 
   release_library:
     needs: manage_release
-    if: ${{ github.event_name == 'push' || github.event.inputs.action == 'release' || github.event.inputs.action == 'reupload' }}
+    if: ${{ always() && (github.event_name == 'push' || github.event.inputs.action == 'release' || github.event.inputs.action == 'reupload') }}
     runs-on: ubuntu-latest
     outputs:
       library_version: ${{ steps.cr.outputs.chart_version }}
@@ -118,7 +124,7 @@ jobs:
         run: echo "Released mcp-library version ${{ steps.cr.outputs.chart_version }}"
   release_all:
     needs: release_library
-    if: ${{ github.event_name == 'push' || github.event.inputs.action == 'release' || github.event.inputs.action == 'reupload' }}
+    if: ${{ always() && (github.event_name == 'push' || github.event.inputs.action == 'release' || github.event.inputs.action == 'reupload') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
