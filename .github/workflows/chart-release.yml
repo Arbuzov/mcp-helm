@@ -8,12 +8,90 @@ on:
       - 'charts/**'
       - '.github/workflows/*'
   workflow_dispatch:
+    inputs:
+      action:
+        description: Release behavior (release, delete, reupload)
+        type: choice
+        options:
+          - release
+          - delete
+          - reupload
+        default: release
+      chart:
+        description: Chart name for delete/reupload (e.g. mcpo)
+        type: string
+        required: false
+      version:
+        description: Chart version for delete/reupload (e.g. 0.3.2)
+        type: string
+        required: false
 
 permissions:
   contents: write
 
 jobs:
+  manage_release:
+    runs-on: ubuntu-latest
+    env:
+      ACTION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.action || 'release' }}
+      CHART: ${{ github.event.inputs.chart }}
+      VERSION: ${{ github.event.inputs.version }}
+    if: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.action == 'delete' || github.event.inputs.action == 'reupload') }}
+    steps:
+      - name: Validate inputs
+        if: ${{ env.ACTION == 'delete' || env.ACTION == 'reupload' }}
+        run: |
+          if [[ -z "${CHART}" || -z "${VERSION}" ]]; then
+            echo "chart and version inputs are required for ${ACTION}."
+            exit 1
+          fi
+
+      - name: Install Helm
+        if: ${{ env.ACTION == 'delete' || env.ACTION == 'reupload' }}
+        uses: azure/setup-helm@v4
+
+      - name: Delete GitHub release and gh-pages artifacts
+        if: ${{ env.ACTION == 'delete' || env.ACTION == 'reupload' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          tag="${CHART}-${VERSION}"
+          repo="${GITHUB_REPOSITORY}"
+
+          echo "Deleting GitHub release/tag ${tag} in ${repo}..."
+          if gh release view "${tag}" >/dev/null 2>&1; then
+            gh release delete "${tag}" --cleanup-tag --yes
+          else
+            echo "Release ${tag} not found; skipping deletion."
+          fi
+
+          tmpdir="$(mktemp -d)"
+          trap 'rm -rf "${tmpdir}"' EXIT
+
+          git -C "${tmpdir}" clone --branch gh-pages --depth 1 "https://github.com/${repo}.git" gh-pages \
+            || { echo "gh-pages branch not found; nothing to clean up."; exit 0; }
+          cd "${tmpdir}/gh-pages"
+
+          rm -f "${CHART}-${VERSION}.tgz" "${CHART}-${VERSION}.tgz.prov"
+          rm -f index.yaml
+          helm repo index .
+
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit in gh-pages."
+            exit 0
+          fi
+
+          git commit -m "Remove ${CHART} ${VERSION} from index"
+          git push origin gh-pages
+
   release_library:
+    needs: manage_release
+    if: ${{ always() && (github.event_name == 'push' || github.event.inputs.action == 'release' || github.event.inputs.action == 'reupload') }}
     runs-on: ubuntu-latest
     outputs:
       library_version: ${{ steps.cr.outputs.chart_version }}
@@ -46,6 +124,7 @@ jobs:
         run: echo "Released mcp-library version ${{ steps.cr.outputs.chart_version }}"
   release_all:
     needs: release_library
+    if: ${{ always() && (github.event_name == 'push' || github.event.inputs.action == 'release' || github.event.inputs.action == 'reupload') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -74,4 +153,3 @@ jobs:
           skip_existing: false
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
