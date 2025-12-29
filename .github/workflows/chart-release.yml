@@ -69,7 +69,8 @@ jobs:
           tmpdir="$(mktemp -d)"
           trap 'rm -rf "${tmpdir}"' EXIT
 
-          git -C "${tmpdir}" clone --branch gh-pages --depth 1 "https://github.com/${repo}.git" gh-pages \
+          git -C "${tmpdir}" clone --branch gh-pages --depth 1 \
+            "https://x-access-token:${GH_TOKEN}@github.com/${repo}.git" gh-pages \
             || { echo "gh-pages branch not found; nothing to clean up."; exit 0; }
           cd "${tmpdir}/gh-pages"
 
@@ -87,7 +88,7 @@ jobs:
           fi
 
           git commit -m "Remove ${CHART} ${VERSION} from index"
-          git push origin gh-pages
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${repo}.git" gh-pages
 
   release_library:
     needs: manage_release
