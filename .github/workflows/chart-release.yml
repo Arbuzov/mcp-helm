@@ -46,9 +46,9 @@ jobs:
             exit 1
           fi
 
-      - name: Install Helm
+      - name: Install PyYAML
         if: ${{ env.ACTION == 'delete' || env.ACTION == 'reupload' }}
-        uses: azure/setup-helm@v4
+        run: python -m pip install --upgrade pyyaml
 
       - name: Delete GitHub release and gh-pages artifacts
         if: ${{ env.ACTION == 'delete' || env.ACTION == 'reupload' }}
@@ -69,14 +69,35 @@ jobs:
           tmpdir="$(mktemp -d)"
           trap 'rm -rf "${tmpdir}"' EXIT
 
-          git -C "${tmpdir}" clone --branch gh-pages --depth 1 \
-            "https://x-access-token:${GH_TOKEN}@github.com/${repo}.git" gh-pages \
+          git -C "${tmpdir}" clone --branch gh-pages --depth 1 "https://github.com/${repo}.git" gh-pages \
             || { echo "gh-pages branch not found; nothing to clean up."; exit 0; }
           cd "${tmpdir}/gh-pages"
 
           rm -f "${CHART}-${VERSION}.tgz" "${CHART}-${VERSION}.tgz.prov"
-          rm -f index.yaml
-          helm repo index .
+          if [[ -f index.yaml ]]; then
+            python - "${CHART}" "${VERSION}" <<'PY'
+import sys
+from pathlib import Path
+import yaml
+
+chart = sys.argv[1]
+version = sys.argv[2]
+index_path = Path("index.yaml")
+
+data = {}
+if index_path.exists():
+    with index_path.open() as handle:
+        data = yaml.safe_load(handle) or {}
+
+entries = data.get("entries", {})
+chart_entries = entries.get(chart, [])
+entries[chart] = [entry for entry in chart_entries if entry.get("version") != version]
+data["entries"] = entries
+
+with index_path.open("w") as handle:
+    yaml.safe_dump(data, handle, sort_keys=False)
+PY
+          fi
 
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
@@ -88,7 +109,7 @@ jobs:
           fi
 
           git commit -m "Remove ${CHART} ${VERSION} from index"
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${repo}.git" gh-pages
+          git push origin gh-pages
 
   release_library:
     needs: manage_release
