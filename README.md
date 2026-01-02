@@ -38,8 +38,8 @@ Use the `Release Charts` workflow with the `action` input set to `delete` or `re
 Workflow dispatch inputs:
 
 - `action`: `release` (default), `delete`, or `reupload`.
-- `chart`: chart name (required for delete/reupload).
-- `version`: chart version (required for delete/reupload).
+- `chart`: chart name (required for delete/reupload). Use `all` to target every chart.
+- `version`: chart version (required for delete/reupload). Use `all` to target every version for the chart or, with `chart=all`, every version of every chart.
 
 Notes:
 
