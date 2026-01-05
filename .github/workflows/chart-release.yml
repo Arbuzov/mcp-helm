@@ -114,7 +114,15 @@ if index_path.exists():
 PY
 
           if [[ ! -s "${targets_file}" ]]; then
-            echo "No matching chart versions found to delete."
+            if [[ "${CHART}" == "all" || "${VERSION}" == "all" ]]; then
+              if [[ ! -f index.yaml ]]; then
+                echo "index.yaml is missing; no chart versions found for bulk cleanup."
+              else
+                echo "index.yaml contains no matching entries; no releases or artifacts deleted."
+              fi
+            else
+              echo "No matching chart versions found to delete."
+            fi
             exit 0
           fi
 
