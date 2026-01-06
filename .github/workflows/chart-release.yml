@@ -19,7 +19,19 @@ on:
         default: release
       chart:
         description: Chart name for delete/reupload (e.g. mcpo, or all for every chart)
-        type: string
+        type: choice
+        options:
+          - all
+          - atlassian
+          - claude-code-api
+          - copilot-api
+          - gitlab
+          - homeassistant
+          - kubernetes
+          - mcpo
+          - mcp-library
+          - playwright
+          - search
         required: false
       version:
         description: Chart version for delete/reupload (e.g. 0.3.2, or all for every version)
