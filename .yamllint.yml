@@ -1,3 +1,6 @@
 extends: relaxed
 ignore: |
   charts/*/templates/*
+rules:
+  line-length:
+    max: 160
