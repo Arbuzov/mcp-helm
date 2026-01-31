@@ -1,3 +1,5 @@
+{{- $customConfigKey := default "custom-config.yaml" .Values.customConfig.key -}}
+{{- $customConfigName := default (printf "%s-custom-config" (include "mcp-gitlab-helm.fullname" .)) .Values.customConfig.name -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -65,6 +67,13 @@ spec:
             - name: http
               containerPort: {{ $servicePort }}
               protocol: TCP
+          {{- if .Values.customConfig.enabled }}
+          volumeMounts:
+            - name: custom-config
+              mountPath: {{ .Values.customConfig.mountPath }}
+              subPath: {{ $customConfigKey }}
+              readOnly: true
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
@@ -87,6 +96,15 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- if .Values.customConfig.enabled }}
+      volumes:
+        - name: custom-config
+          configMap:
+            name: {{ $customConfigName }}
+            items:
+              - key: {{ $customConfigKey }}
+                path: {{ $customConfigKey }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

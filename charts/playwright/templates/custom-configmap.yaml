@@ -1,0 +1,16 @@
+{{- if .Values.customConfig.enabled -}}
+{{- $customConfigName := default (printf "%s-custom-config" (include "mcp-playwright-helm.fullname" .)) .Values.customConfig.name -}}
+{{- $customConfigKey := default "custom-config.yaml" .Values.customConfig.key -}}
+{{- if eq (trim .Values.customConfig.data) "" -}}
+{{- fail "customConfig.data must be set when customConfig.enabled is true" -}}
+{{- end -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $customConfigName }}
+  labels:
+    {{- include "mcp-playwright-helm.labels" . | nindent 4 }}
+data:
+  {{ $customConfigKey }}: |
+    {{- .Values.customConfig.data | nindent 4 }}
+{{- end }}

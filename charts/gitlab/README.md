@@ -102,6 +102,16 @@ When `ingress.path` is not `/`, the annotation `nginx.ingress.kubernetes.io/use-
 | `envSecrets`   | Environment variables from external secrets         | `{}`  |
 | `secretEnv`    | Environment variables to be set from created secret | `{}`  |
 
+### Custom config parameters
+
+| Name | Description | Value |
+| --- | --- | --- |
+| `customConfig.enabled` | Enable the custom ConfigMap and mount it as a file | `false` |
+| `customConfig.name` | Override name of the custom ConfigMap | `""` |
+| `customConfig.key` | ConfigMap key (file name) to mount | `custom-config.yaml` |
+| `customConfig.mountPath` | Target file path inside the container | `/etc/mcp/custom-config.yaml` |
+| `customConfig.data` | Custom configuration content stored in the ConfigMap | `""` |
+
 ### Autoscaling parameters
 
 | Name                                            | Description                                                                                                          | Value   |

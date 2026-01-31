@@ -1,3 +1,5 @@
+{{- $customConfigKey := default "custom-config.yaml" .Values.customConfig.key -}}
+{{- $customConfigName := default (printf "%s-custom-config" (include "mcp-playwright-helm.fullname" .)) .Values.customConfig.name -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -69,6 +71,13 @@ spec:
             - name: http
               containerPort: {{ $containerPort }}
               protocol: TCP
+          {{- if .Values.customConfig.enabled }}
+          volumeMounts:
+            - name: custom-config
+              mountPath: {{ .Values.customConfig.mountPath }}
+              subPath: {{ $customConfigKey }}
+              readOnly: true
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /
@@ -83,6 +92,15 @@ spec:
             periodSeconds: 5
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- if .Values.customConfig.enabled }}
+      volumes:
+        - name: custom-config
+          configMap:
+            name: {{ $customConfigName }}
+            items:
+              - key: {{ $customConfigKey }}
+                path: {{ $customConfigKey }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

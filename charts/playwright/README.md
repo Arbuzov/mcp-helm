@@ -92,6 +92,16 @@ match any hostname. Some ingress controllers may require explicit hostnames inst
 | `envSecrets` | Environment variables sourced from existing secrets  | `{}`  |
 | `secretEnv`  | Environment variables to create from chart-managed secret | `{}` |
 
+### Custom config parameters
+
+| Name | Description | Value |
+| --- | --- | --- |
+| `customConfig.enabled` | Enable the custom ConfigMap and mount it as a file | `false` |
+| `customConfig.name` | Override name of the custom ConfigMap | `""` |
+| `customConfig.key` | ConfigMap key (file name) to mount | `custom-config.yaml` |
+| `customConfig.mountPath` | Target file path inside the container | `/etc/mcp/custom-config.yaml` |
+| `customConfig.data` | Custom configuration content stored in the ConfigMap | `""` |
+
 > [!IMPORTANT]
 > The `secretEnv` section is intended for quick experiments only. For production
 > deployments, prefer sourcing sensitive data from existing Kubernetes Secrets (via

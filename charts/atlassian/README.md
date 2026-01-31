@@ -48,6 +48,7 @@ A Helm chart for Kubernetes
 | resources.requests.cpu | string | `"200m"` |  |
 | resources.requests.memory | string | `"256Mi"` |  |
 | secretEnv | object | `{}` | Create secret with environment data; keys must be valid secret keys and values cannot be empty |
+| customConfig | object | `{}` | Custom configuration mounted as a single file inside the container |
 | securityContext | object | `{}` |  |
 | service.port | int | `8000` |  |
 | service.type | string | `"ClusterIP"` |  |
@@ -60,5 +61,10 @@ A Helm chart for Kubernetes
 | envSecrets | object | `{}` | Environment variables from secrets |
 | secretEnv.data | object | `{}` | Key-value pairs to include in the generated secret |
 | secretEnv.name | string | `""` | Name of the generated secret when `secretEnv.data` is set |
+| customConfig.data | string | `""` | Custom configuration content stored in the ConfigMap |
+| customConfig.enabled | bool | `false` | Enable the custom ConfigMap and mount it as a file |
+| customConfig.key | string | `"custom-config.yaml"` | ConfigMap key (file name) to mount |
+| customConfig.mountPath | string | `"/etc/mcp/custom-config.yaml"` | Target file path inside the container |
+| customConfig.name | string | `""` | Override name of the custom ConfigMap |
 
 When `ingress.path` is not `/`, the annotation `nginx.ingress.kubernetes.io/use-regex: "true"` is automatically added.

@@ -58,6 +58,13 @@ config:
   mountPath: /etc/config
   data: {}
 
+customConfig:
+  enabled: false
+  name: ""
+  key: custom-config.yaml
+  mountPath: /etc/mcp/custom-config.yaml
+  data: ""
+
 secret:
   data: {}
 

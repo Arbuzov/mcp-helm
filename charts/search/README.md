@@ -42,6 +42,11 @@ helm install search ./charts/search \
 | `ingress.hosts` | Host and path rules for ingress routing. | `[{ host: "search.local", paths: [{ path: "/", pathType: "Prefix" }] }]` |
 | `config.enabled` | Create a config map and mount it into the pods. | `false` |
 | `config.mountPath` | Path where the rendered config map is mounted. | `/etc/config` |
+| `customConfig.enabled` | Enable the custom ConfigMap and mount it as a file. | `false` |
+| `customConfig.key` | ConfigMap key (file name) to mount. | `custom-config.yaml` |
+| `customConfig.mountPath` | Target file path inside the container. | `/etc/mcp/custom-config.yaml` |
+| `customConfig.name` | Override name of the custom ConfigMap. | `""` |
+| `customConfig.data` | Custom configuration content stored in the ConfigMap. | `""` |
 | `secret.data` | Map of base64 encoded secret values exposed to the pods. | `{}` |
 
 Refer to `values.yaml` for the complete list of tunable settings.

@@ -136,6 +136,14 @@ envSecrets: {}
 # Keys must follow RFC 1123 naming rules and values cannot be empty.
 secretEnv: {}
 
+# Custom configuration mounted as a single file inside the container.
+customConfig:
+  enabled: false
+  name: ""
+  key: custom-config.yaml
+  mountPath: /etc/mcp/custom-config.yaml
+  data: ""
+
 # Additional sidecar containers to run alongside the main container.
 # Each list item must include `name` and `image` and may specify any other
 # fields allowed in the Kubernetes `Container` spec such as `command`, `args`,

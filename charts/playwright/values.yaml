@@ -93,5 +93,12 @@ secretEnv:
   # existing secrets via `envSecrets` or external secret managers.
   data: {}
 
+customConfig:
+  enabled: false
+  name: ""
+  key: custom-config.yaml
+  mountPath: /etc/mcp/custom-config.yaml
+  data: ""
+
 # Additional CLI arguments appended after the managed port/path flags
 extraArgs: []
