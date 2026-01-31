@@ -1,3 +1,5 @@
+{{- $customConfigKey := default "custom-config.yaml" .Values.customConfig.key -}}
+{{- $customConfigName := default (printf "%s-custom-config" (include "mcp-mcpo-helm.fullname" .)) .Values.customConfig.name -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,6 +17,9 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.customConfig.enabled }}
+        checksum/custom-config: {{ include (print $.Template.BasePath "/custom-configmap.yaml") . | sha256sum }}
+        {{- end }}
         {{- if .Values.secretEnv.data }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- end }}
@@ -79,6 +84,12 @@ spec:
             - name: config
               mountPath: /opt/mcpo/config.json
               subPath: config.json
+            {{- if .Values.customConfig.enabled }}
+            - name: custom-config
+              mountPath: {{ .Values.customConfig.mountPath }}
+              subPath: {{ $customConfigKey }}
+              readOnly: true
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /openapi.json
@@ -111,3 +122,11 @@ spec:
         - name: config
           configMap:
             name: {{ include "mcp-mcpo-helm.fullname" . }}
+        {{- if .Values.customConfig.enabled }}
+        - name: custom-config
+          configMap:
+            name: {{ $customConfigName }}
+            items:
+              - key: {{ $customConfigKey }}
+                path: {{ $customConfigKey }}
+        {{- end }}

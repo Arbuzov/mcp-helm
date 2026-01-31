@@ -13,7 +13,7 @@ type: application
 
 # Bump this chart version whenever the chart or its templates change.
 # Versions are expected to follow Semantic Versioning (https://semver.org/).
-version: 0.2.28
+version: 0.2.29
 
 # This is the application version. Bump it whenever the app itself changes.
 # It does not need to follow Semantic Versioning. Quotes are recommended.

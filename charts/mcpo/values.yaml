@@ -95,6 +95,13 @@ envSecrets: {}
 secretEnv:
   data: {}
 
+customConfig:
+  enabled: false
+  name: ""
+  key: custom-config.yaml
+  mountPath: /etc/mcp/custom-config.yaml
+  data: ""
+
 # Configuration file contents for mcpo. Values will be rendered as JSON in
 # `config.json` and mounted to the container.
 config:

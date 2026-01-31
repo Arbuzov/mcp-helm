@@ -93,3 +93,10 @@ envSecrets: {}
 secretEnv:
   data: {}
     # HA_TOKEN: "your-long-lived-access-token-base64"
+
+customConfig:
+  enabled: false
+  name: ""
+  key: custom-config.yaml
+  mountPath: /etc/mcp/custom-config.yaml
+  data: ""

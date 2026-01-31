@@ -36,7 +36,8 @@ on:
         required: false
       version:
         description: >-
-          Chart version for delete/reupload (e.g. 0.3.2, or all for every version)
+          Chart version for delete/reupload (e.g. 0.3.2, or all for every
+          version)
         type: string
         required: false
 
@@ -48,15 +49,14 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ACTION: >-
-        ${{ github.event_name == 'workflow_dispatch'
-            && github.event.inputs.action
-            || 'release' }}
+        ${{ github.event_name == 'workflow_dispatch' &&
+        github.event.inputs.action || 'release' }}
       CHART: ${{ github.event.inputs.chart }}
       VERSION: ${{ github.event.inputs.version }}
     if: >-
-      ${{ github.event_name == 'workflow_dispatch'
-          && (github.event.inputs.action == 'delete'
-          || github.event.inputs.action == 'reupload') }}
+      ${{ github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.action == 'delete' ||
+      github.event.inputs.action == 'reupload') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -87,10 +87,9 @@ jobs:
   release_library:
     needs: manage_release
     if: >-
-      ${{ always()
-          && (github.event_name == 'push'
-          || github.event.inputs.action == 'release'
-          || github.event.inputs.action == 'reupload') }}
+      ${{ always() && (github.event_name == 'push' ||
+      github.event.inputs.action == 'release' ||
+      github.event.inputs.action == 'reupload') }}
     runs-on: ubuntu-latest
     outputs:
       library_version: ${{ steps.cr.outputs.chart_version }}
@@ -107,7 +106,8 @@ jobs:
 
       - name: Wipe all charts except mcp-library
         run: |
-          find charts -mindepth 1 -maxdepth 1 ! -name 'mcp-library' -exec rm -rf {} +
+          find charts -mindepth 1 -maxdepth 1 ! -name 'mcp-library' \
+            -exec rm -rf {} +
 
       - name: Install chart-releaser (reupload)
         if: >-
@@ -149,14 +149,15 @@ jobs:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Show released library version
-        run: echo "Released mcp-library version ${{ steps.cr.outputs.chart_version }}"
+        run: >-
+          echo "Released mcp-library version
+          ${{ steps.cr.outputs.chart_version }}"
   release_all:
     needs: release_library
     if: >-
-      ${{ always()
-          && (github.event_name == 'push'
-          || github.event.inputs.action == 'release'
-          || github.event.inputs.action == 'reupload') }}
+      ${{ always() && (github.event_name == 'push' ||
+      github.event.inputs.action == 'release' ||
+      github.event.inputs.action == 'reupload') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

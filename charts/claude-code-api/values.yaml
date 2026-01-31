@@ -90,3 +90,10 @@ envSecrets: {}
 
 secretEnv:
   data: {}
+
+customConfig:
+  enabled: false
+  name: ""
+  key: custom-config.yaml
+  mountPath: /etc/mcp/custom-config.yaml
+  data: ""

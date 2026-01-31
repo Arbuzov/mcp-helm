@@ -101,6 +101,16 @@ Provide the GitHub token via one of `auth.tokenSecret.value`, `auth.tokenSecret.
 | `envSecrets`    | Environment variables sourced from external secrets          | `{}`  |
 | `secretEnv`     | Additional key/value pairs stored in a dedicated secret and exposed as environment variables | `{}` |
 
+### Custom config parameters
+
+| Name | Description | Value |
+| --- | --- | --- |
+| `customConfig.enabled` | Enable the custom ConfigMap and mount it as a file | `false` |
+| `customConfig.name` | Override name of the custom ConfigMap | `""` |
+| `customConfig.key` | ConfigMap key (file name) to mount | `custom-config.yaml` |
+| `customConfig.mountPath` | Target file path inside the container | `/etc/mcp/custom-config.yaml` |
+| `customConfig.data` | Custom configuration content stored in the ConfigMap | `""` |
+
 ### Autoscaling parameters
 
 | Name                                            | Description                                         | Value |

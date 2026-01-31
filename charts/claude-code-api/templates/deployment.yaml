@@ -1,4 +1,6 @@
 {{- $tokenFromExisting := ne (trim .Values.auth.claudeOAuthToken.existingSecret) "" -}}
+{{- $customConfigKey := default "custom-config.yaml" .Values.customConfig.key -}}
+{{- $customConfigName := default (printf "%s-custom-config" (include "claude-code-api-helm.fullname" .)) .Values.customConfig.name -}}
 {{- $tokenValueProvided := or (ne (trim .Values.auth.claudeOAuthToken.value) "") (ne (trim .Values.auth.claudeOAuthToken.valueBase64) "") -}}
 {{- if and (not $tokenValueProvided) (not $tokenFromExisting) -}}
 {{- fail "Provide Claude OAuth token via auth.claudeOAuthToken.value, valueBase64, or existingSecret" -}}
@@ -104,6 +106,13 @@ spec:
               containerPort: {{ .Values.service.ports.https.targetPort | default .Values.app.httpsPort }}
               protocol: TCP
             {{- end }}
+          {{- if .Values.customConfig.enabled }}
+          volumeMounts:
+            - name: custom-config
+              mountPath: {{ .Values.customConfig.mountPath }}
+              subPath: {{ $customConfigKey }}
+              readOnly: true
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /v1/health
@@ -118,6 +127,15 @@ spec:
             periodSeconds: 5
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- if .Values.customConfig.enabled }}
+      volumes:
+        - name: custom-config
+          configMap:
+            name: {{ $customConfigName }}
+            items:
+              - key: {{ $customConfigKey }}
+                path: {{ $customConfigKey }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

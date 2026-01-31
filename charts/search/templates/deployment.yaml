@@ -1,3 +1,5 @@
+{{- $customConfigKey := default "custom-config.yaml" .Values.customConfig.key -}}
+{{- $customConfigName := default (printf "%s-custom-config" (include "search.fullname" .)) .Values.customConfig.name -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -39,10 +41,18 @@ spec:
             - name: http
               containerPort: {{ .Values.crawler.service.port }}
               protocol: TCP
-          {{- if and .Values.config.enabled .Values.config.data .Values.config.mountPath }}
+          {{- if or (and .Values.config.enabled .Values.config.data .Values.config.mountPath) .Values.customConfig.enabled }}
           volumeMounts:
+            {{- if and .Values.config.enabled .Values.config.data .Values.config.mountPath }}
             - name: config
               mountPath: {{ .Values.config.mountPath }}
+            {{- end }}
+            {{- if .Values.customConfig.enabled }}
+            - name: custom-config
+              mountPath: {{ .Values.customConfig.mountPath }}
+              subPath: {{ $customConfigKey }}
+              readOnly: true
+            {{- end }}
           {{- end }}
           {{- with .Values.crawler.env }}
           env:
@@ -64,10 +74,18 @@ spec:
             - name: flaresolverr
               containerPort: {{ .Values.flaresolverr.service.port }}
               protocol: TCP
-          {{- if and .Values.config.enabled .Values.config.data .Values.config.mountPath }}
+          {{- if or (and .Values.config.enabled .Values.config.data .Values.config.mountPath) .Values.customConfig.enabled }}
           volumeMounts:
+            {{- if and .Values.config.enabled .Values.config.data .Values.config.mountPath }}
             - name: config
               mountPath: {{ .Values.config.mountPath }}
+            {{- end }}
+            {{- if .Values.customConfig.enabled }}
+            - name: custom-config
+              mountPath: {{ .Values.customConfig.mountPath }}
+              subPath: {{ $customConfigKey }}
+              readOnly: true
+            {{- end }}
           {{- end }}
           {{- with .Values.flaresolverr.env }}
           env:
@@ -90,9 +108,19 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if and .Values.config.enabled .Values.config.data }}
+      {{- if or (and .Values.config.enabled .Values.config.data) .Values.customConfig.enabled }}
       volumes:
+        {{- if and .Values.config.enabled .Values.config.data }}
         - name: config
           configMap:
             name: {{ include "search.fullname" . }}-config
+        {{- end }}
+        {{- if .Values.customConfig.enabled }}
+        - name: custom-config
+          configMap:
+            name: {{ $customConfigName }}
+            items:
+              - key: {{ $customConfigKey }}
+                path: {{ $customConfigKey }}
+        {{- end }}
       {{- end }}
