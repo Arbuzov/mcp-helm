@@ -109,12 +109,41 @@ jobs:
         run: |
           find charts -mindepth 1 -maxdepth 1 ! -name 'mcp-library' -exec rm -rf {} +
 
+      - name: Install chart-releaser (reupload)
+        if: >-
+          ${{ github.event.inputs.action == 'reupload'
+              && (github.event.inputs.chart == 'all'
+              || github.event.inputs.chart == 'mcp-library') }}
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          install_only: true
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package charts (reupload)
+        if: >-
+          ${{ github.event.inputs.action == 'reupload'
+              && (github.event.inputs.chart == 'all'
+              || github.event.inputs.chart == 'mcp-library') }}
+        run: |
+          bash "${GITHUB_WORKSPACE}/.github/scripts/package_charts.sh" \
+            "charts" "${{ github.event.inputs.chart }}"
+
       - name: Run chart-releaser
         id: cr
         uses: helm/chart-releaser-action@v1.7.0
+        if: >-
+          ${{ github.event.inputs.action != 'reupload'
+              || github.event.inputs.chart == 'all'
+              || github.event.inputs.chart == 'mcp-library' }}
         with:
           charts_dir: charts
           pages_branch: gh-pages
+          skip_packaging: >-
+            ${{ github.event.inputs.action == 'reupload'
+                && (github.event.inputs.chart == 'all'
+                || github.event.inputs.chart == 'mcp-library')
+                && 'true' || '' }}
           skip_existing: false
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -148,11 +177,36 @@ jobs:
           helm repo add mcp https://arbuzov.github.io/mcp-helm/
           helm repo update
 
+      - name: Install chart-releaser (reupload)
+        if: >-
+          ${{ github.event.inputs.action == 'reupload'
+              && github.event.inputs.chart != 'mcp-library' }}
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          install_only: true
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package charts (reupload)
+        if: >-
+          ${{ github.event.inputs.action == 'reupload'
+              && github.event.inputs.chart != 'mcp-library' }}
+        run: |
+          bash "${GITHUB_WORKSPACE}/.github/scripts/package_charts.sh" \
+            "charts" "${{ github.event.inputs.chart }}"
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
+        if: >-
+          ${{ github.event.inputs.action != 'reupload'
+              || github.event.inputs.chart != 'mcp-library' }}
         with:
           charts_dir: charts
           pages_branch: gh-pages
+          skip_packaging: >-
+            ${{ github.event.inputs.action == 'reupload'
+                && github.event.inputs.chart != 'mcp-library'
+                && 'true' || '' }}
           skip_existing: false
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
