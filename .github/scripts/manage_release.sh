@@ -17,8 +17,10 @@ git -C "${tmpdir}" clone --branch gh-pages --depth 1 \
 
 cd "${tmpdir}/gh-pages"
 
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+
 targets_file="${tmpdir}/targets.txt"
-python "${GITHUB_WORKSPACE}/.github/scripts/update_chart_index.py" \
+python3 "${script_dir}/update_chart_index.py" \
   "${CHART}" "${VERSION}" "${targets_file}"
 
 if [[ ! -s "${targets_file}" ]]; then

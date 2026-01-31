@@ -58,6 +58,9 @@ jobs:
           && (github.event.inputs.action == 'delete'
           || github.event.inputs.action == 'reupload') }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Validate inputs
         if: ${{ env.ACTION == 'delete' || env.ACTION == 'reupload' }}
         run: |

@@ -1,14 +1,28 @@
 #!/usr/bin/env python3
-import sys
+import argparse
 from pathlib import Path
 
 import yaml
 
 
 def main() -> int:
-    chart = sys.argv[1]
-    version = sys.argv[2]
-    targets_path = Path(sys.argv[3])
+    parser = argparse.ArgumentParser(
+        description=(
+            "Update the Helm chart index and emit a list of chart/version"
+            " pairs to delete."
+        )
+    )
+    parser.add_argument("chart", help="Chart name or 'all'.")
+    parser.add_argument("version", help="Chart version or 'all'.")
+    parser.add_argument(
+        "targets_path",
+        help="Output path for chart/version pairs.",
+    )
+    args = parser.parse_args()
+
+    chart = args.chart
+    version = args.version
+    targets_path = Path(args.targets_path)
     index_path = Path("index.yaml")
 
     data = {}
