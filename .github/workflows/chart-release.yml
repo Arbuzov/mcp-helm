@@ -147,6 +147,11 @@ jobs:
         with:
           charts_dir: charts
           pages_branch: gh-pages
+          skip_packaging: >-
+            ${{ github.event.inputs.action == 'reupload'
+                && (github.event.inputs.chart == 'all'
+                || github.event.inputs.chart == 'mcp-library')
+                && 'true' || '' }}
           skip_existing: false
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -215,6 +220,10 @@ jobs:
         with:
           charts_dir: charts
           pages_branch: gh-pages
+          skip_packaging: >-
+            ${{ github.event.inputs.action == 'reupload'
+                && github.event.inputs.chart != 'mcp-library'
+                && 'true' || '' }}
           skip_existing: false
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
