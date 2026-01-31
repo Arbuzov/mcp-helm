@@ -129,13 +129,21 @@ jobs:
           bash "${GITHUB_WORKSPACE}/.github/scripts/package_charts.sh" \
             "charts" "${{ github.event.inputs.chart }}"
 
+      - name: Reupload charts
+        if: >-
+          ${{ github.event.inputs.action == 'reupload'
+              && (github.event.inputs.chart == 'all'
+              || github.event.inputs.chart == 'mcp-library') }}
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bash "${GITHUB_WORKSPACE}/.github/scripts/reupload_charts.sh"
+
       - name: Run chart-releaser
         id: cr
         uses: helm/chart-releaser-action@v1.7.0
         if: >-
-          ${{ github.event.inputs.action != 'reupload'
-              || github.event.inputs.chart == 'all'
-              || github.event.inputs.chart == 'mcp-library' }}
+          ${{ github.event.inputs.action != 'reupload' }}
         with:
           charts_dir: charts
           pages_branch: gh-pages
@@ -149,6 +157,7 @@ jobs:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Show released library version
+        if: ${{ github.event.inputs.action != 'reupload' }}
         run: echo "Released mcp-library version ${{ steps.cr.outputs.chart_version }}"
   release_all:
     needs: release_library
@@ -195,11 +204,19 @@ jobs:
           bash "${GITHUB_WORKSPACE}/.github/scripts/package_charts.sh" \
             "charts" "${{ github.event.inputs.chart }}"
 
+      - name: Reupload charts
+        if: >-
+          ${{ github.event.inputs.action == 'reupload'
+              && github.event.inputs.chart != 'mcp-library' }}
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bash "${GITHUB_WORKSPACE}/.github/scripts/reupload_charts.sh"
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
         if: >-
-          ${{ github.event.inputs.action != 'reupload'
-              || github.event.inputs.chart != 'mcp-library' }}
+          ${{ github.event.inputs.action != 'reupload' }}
         with:
           charts_dir: charts
           pages_branch: gh-pages
