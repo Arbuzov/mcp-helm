@@ -18,7 +18,8 @@ on:
           - reupload
         default: release
       chart:
-        description: Chart name for delete/reupload (e.g. mcpo, or all for every chart)
+        description: >-
+          Chart name for delete/reupload (e.g. mcpo, or all for every chart)
         type: choice
         options:
           - all
@@ -34,7 +35,8 @@ on:
           - search
         required: false
       version:
-        description: Chart version for delete/reupload (e.g. 0.3.2, or all for every version)
+        description: >-
+          Chart version for delete/reupload (e.g. 0.3.2, or all for every version)
         type: string
         required: false
 
@@ -45,11 +47,20 @@ jobs:
   manage_release:
     runs-on: ubuntu-latest
     env:
-      ACTION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.action || 'release' }}
+      ACTION: >-
+        ${{ github.event_name == 'workflow_dispatch'
+            && github.event.inputs.action
+            || 'release' }}
       CHART: ${{ github.event.inputs.chart }}
       VERSION: ${{ github.event.inputs.version }}
-    if: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.action == 'delete' || github.event.inputs.action == 'reupload') }}
+    if: >-
+      ${{ github.event_name == 'workflow_dispatch'
+          && (github.event.inputs.action == 'delete'
+          || github.event.inputs.action == 'reupload') }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Validate inputs
         if: ${{ env.ACTION == 'delete' || env.ACTION == 'reupload' }}
         run: |
@@ -71,100 +82,15 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set -euo pipefail
-          repo="${GITHUB_REPOSITORY}"
-
-          tmpdir="$(mktemp -d)"
-          trap 'rm -rf "${tmpdir}"' EXIT
-
-          git -C "${tmpdir}" clone --branch gh-pages --depth 1 "https://github.com/${repo}.git" gh-pages \
-            || { echo "gh-pages branch not found; nothing to clean up."; exit 0; }
-          cd "${tmpdir}/gh-pages"
-
-          targets_file="${tmpdir}/targets.txt"
-          python - "${CHART}" "${VERSION}" "${targets_file}" <<'PY'
-import sys
-from pathlib import Path
-import yaml
-
-chart = sys.argv[1]
-version = sys.argv[2]
-targets_path = Path(sys.argv[3])
-index_path = Path("index.yaml")
-
-data = {}
-if index_path.exists():
-    with index_path.open() as handle:
-        data = yaml.safe_load(handle) or {}
-
-entries = data.get("entries", {})
-targets = []
-
-if chart == "all" and version == "all":
-    for chart_name, chart_entries in entries.items():
-        for entry in chart_entries:
-            entry_version = entry.get("version")
-            if entry_version:
-                targets.append((chart_name, entry_version))
-    data["entries"] = {}
-elif version == "all":
-    chart_entries = entries.get(chart, [])
-    targets = [(chart, entry.get("version")) for entry in chart_entries if entry.get("version")]
-    entries[chart] = []
-    data["entries"] = entries
-else:
-    targets = [(chart, version)]
-    chart_entries = entries.get(chart, [])
-    entries[chart] = [entry for entry in chart_entries if entry.get("version") != version]
-    data["entries"] = entries
-
-targets_path.write_text("\n".join(f"{chart_name} {version_name}" for chart_name, version_name in targets))
-
-if index_path.exists():
-    with index_path.open("w") as handle:
-        yaml.safe_dump(data, handle, sort_keys=False)
-PY
-
-          if [[ ! -s "${targets_file}" ]]; then
-            if [[ "${CHART}" == "all" || "${VERSION}" == "all" ]]; then
-              if [[ ! -f index.yaml ]]; then
-                echo "index.yaml is missing; no chart versions found for bulk cleanup."
-              else
-                echo "index.yaml contains no matching entries; no releases or artifacts deleted."
-              fi
-            else
-              echo "No matching chart versions found to delete."
-            fi
-            exit 0
-          fi
-
-          while read -r target_chart target_version; do
-            tag="${target_chart}-${target_version}"
-            echo "Deleting GitHub release/tag ${tag} in ${repo}..."
-            if gh release view "${tag}" >/dev/null 2>&1; then
-              gh release delete "${tag}" --cleanup-tag --yes
-            else
-              echo "Release ${tag} not found; skipping deletion."
-            fi
-
-            rm -f "${target_chart}-${target_version}.tgz" "${target_chart}-${target_version}.tgz.prov"
-          done < "${targets_file}"
-
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-          git add -A
-          if git diff --cached --quiet; then
-            echo "No changes to commit in gh-pages."
-            exit 0
-          fi
-
-          git commit -m "Remove ${CHART} ${VERSION} from index"
-          git push origin gh-pages
+          bash "${GITHUB_WORKSPACE}/.github/scripts/manage_release.sh"
 
   release_library:
     needs: manage_release
-    if: ${{ always() && (github.event_name == 'push' || github.event.inputs.action == 'release' || github.event.inputs.action == 'reupload') }}
+    if: >-
+      ${{ always()
+          && (github.event_name == 'push'
+          || github.event.inputs.action == 'release'
+          || github.event.inputs.action == 'reupload') }}
     runs-on: ubuntu-latest
     outputs:
       library_version: ${{ steps.cr.outputs.chart_version }}
@@ -183,12 +109,41 @@ PY
         run: |
           find charts -mindepth 1 -maxdepth 1 ! -name 'mcp-library' -exec rm -rf {} +
 
+      - name: Install chart-releaser (reupload)
+        if: >-
+          ${{ github.event.inputs.action == 'reupload'
+              && (github.event.inputs.chart == 'all'
+              || github.event.inputs.chart == 'mcp-library') }}
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          install_only: true
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package charts (reupload)
+        if: >-
+          ${{ github.event.inputs.action == 'reupload'
+              && (github.event.inputs.chart == 'all'
+              || github.event.inputs.chart == 'mcp-library') }}
+        run: |
+          bash "${GITHUB_WORKSPACE}/.github/scripts/package_charts.sh" \
+            "charts" "${{ github.event.inputs.chart }}"
+
       - name: Run chart-releaser
         id: cr
         uses: helm/chart-releaser-action@v1.7.0
+        if: >-
+          ${{ github.event.inputs.action != 'reupload'
+              || github.event.inputs.chart == 'all'
+              || github.event.inputs.chart == 'mcp-library' }}
         with:
           charts_dir: charts
           pages_branch: gh-pages
+          skip_packaging: >-
+            ${{ github.event.inputs.action == 'reupload'
+                && (github.event.inputs.chart == 'all'
+                || github.event.inputs.chart == 'mcp-library')
+                && 'true' || '' }}
           skip_existing: false
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -197,7 +152,11 @@ PY
         run: echo "Released mcp-library version ${{ steps.cr.outputs.chart_version }}"
   release_all:
     needs: release_library
-    if: ${{ always() && (github.event_name == 'push' || github.event.inputs.action == 'release' || github.event.inputs.action == 'reupload') }}
+    if: >-
+      ${{ always()
+          && (github.event_name == 'push'
+          || github.event.inputs.action == 'release'
+          || github.event.inputs.action == 'reupload') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -218,11 +177,36 @@ PY
           helm repo add mcp https://arbuzov.github.io/mcp-helm/
           helm repo update
 
+      - name: Install chart-releaser (reupload)
+        if: >-
+          ${{ github.event.inputs.action == 'reupload'
+              && github.event.inputs.chart != 'mcp-library' }}
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          install_only: true
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package charts (reupload)
+        if: >-
+          ${{ github.event.inputs.action == 'reupload'
+              && github.event.inputs.chart != 'mcp-library' }}
+        run: |
+          bash "${GITHUB_WORKSPACE}/.github/scripts/package_charts.sh" \
+            "charts" "${{ github.event.inputs.chart }}"
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
+        if: >-
+          ${{ github.event.inputs.action != 'reupload'
+              || github.event.inputs.chart != 'mcp-library' }}
         with:
           charts_dir: charts
           pages_branch: gh-pages
+          skip_packaging: >-
+            ${{ github.event.inputs.action == 'reupload'
+                && github.event.inputs.chart != 'mcp-library'
+                && 'true' || '' }}
           skip_existing: false
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
