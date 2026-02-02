@@ -141,7 +141,7 @@ jobs:
           repo="${GITHUB_REPOSITORY##*/}"
           rm -rf .cr-index
           mkdir -p .cr-index
-          cr upload --owner "${owner}" --repo "${repo}" --commit "$(git rev-parse HEAD)" --pages-branch gh-pages
+          cr upload --owner "${owner}" --git-repo "${repo}" --commit "$(git rev-parse HEAD)" --pages-branch gh-pages
           cr index --owner "${owner}" --repo "${repo}" --push --pages-branch gh-pages
 
       - name: Run chart-releaser
@@ -213,7 +213,7 @@ jobs:
           repo="${GITHUB_REPOSITORY##*/}"
           rm -rf .cr-index
           mkdir -p .cr-index
-          cr upload --owner "${owner}" --repo "${repo}" --commit "$(git rev-parse HEAD)" --pages-branch gh-pages
+          cr upload --owner "${owner}" --git-repo "${repo}" --commit "$(git rev-parse HEAD)" --pages-branch gh-pages
           cr index --owner "${owner}" --repo "${repo}" --push --pages-branch gh-pages
 
       - name: Run chart-releaser
