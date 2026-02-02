@@ -2,6 +2,11 @@
 set -euo pipefail
 
 repo="${GITHUB_REPOSITORY}"
+token="${GH_TOKEN:-${GITHUB_TOKEN:-}}"
+auth_header=""
+if [[ -n "${token}" ]]; then
+  auth_header="AUTHORIZATION: basic $(printf 'x-access-token:%s' "${token}" | base64)"
+fi
 
 if [[ -z "${CHART:-}" || -z "${VERSION:-}" ]]; then
   echo "CHART and VERSION must be set."
@@ -11,7 +16,12 @@ fi
 tmpdir="$(mktemp -d)"
 trap 'rm -rf "${tmpdir}"' EXIT
 
-git -C "${tmpdir}" clone --branch gh-pages --depth 1 \
+git_clone_cmd=(git)
+if [[ -n "${auth_header}" ]]; then
+  git_clone_cmd+=(-c "http.extraHeader=${auth_header}")
+fi
+
+"${git_clone_cmd[@]}" -C "${tmpdir}" clone --branch gh-pages --depth 1 \
   "https://github.com/${repo}.git" gh-pages \
   || { echo "gh-pages branch not found; nothing to clean up."; exit 0; }
 
@@ -59,4 +69,9 @@ if git diff --cached --quiet; then
 fi
 
 git commit -m "Remove ${CHART} ${VERSION} from index"
-git push origin gh-pages
+git_push_cmd=(git)
+if [[ -n "${auth_header}" ]]; then
+  git_push_cmd+=(-c "http.extraHeader=${auth_header}")
+fi
+
+"${git_push_cmd[@]}" push origin gh-pages
