@@ -129,21 +129,28 @@ jobs:
           bash "${GITHUB_WORKSPACE}/.github/scripts/package_charts.sh" \
             "charts" "${{ github.event.inputs.chart }}"
 
+      - name: Run chart-releaser (reupload)
+        if: >-
+          ${{ github.event.inputs.action == 'reupload'
+              && (github.event.inputs.chart == 'all'
+              || github.event.inputs.chart == 'mcp-library') }}
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          repo="${GITHUB_REPOSITORY##*/}"
+          rm -rf .cr-index
+          mkdir -p .cr-index
+          cr upload --owner "${owner}" --git-repo "${repo}" --commit "$(git rev-parse HEAD)" --pages-branch gh-pages
+          cr index --owner "${owner}" --repo "${repo}" --push --pages-branch gh-pages
+
       - name: Run chart-releaser
         id: cr
         uses: helm/chart-releaser-action@v1.7.0
-        if: >-
-          ${{ github.event.inputs.action != 'reupload'
-              || github.event.inputs.chart == 'all'
-              || github.event.inputs.chart == 'mcp-library' }}
+        if: ${{ github.event.inputs.action != 'reupload' }}
         with:
           charts_dir: charts
           pages_branch: gh-pages
-          skip_packaging: >-
-            ${{ github.event.inputs.action == 'reupload'
-                && (github.event.inputs.chart == 'all'
-                || github.event.inputs.chart == 'mcp-library')
-                && 'true' || '' }}
           skip_existing: false
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -195,18 +202,26 @@ jobs:
           bash "${GITHUB_WORKSPACE}/.github/scripts/package_charts.sh" \
             "charts" "${{ github.event.inputs.chart }}"
 
+      - name: Run chart-releaser (reupload)
+        if: >-
+          ${{ github.event.inputs.action == 'reupload'
+              && github.event.inputs.chart != 'mcp-library' }}
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          repo="${GITHUB_REPOSITORY##*/}"
+          rm -rf .cr-index
+          mkdir -p .cr-index
+          cr upload --owner "${owner}" --git-repo "${repo}" --commit "$(git rev-parse HEAD)" --pages-branch gh-pages
+          cr index --owner "${owner}" --repo "${repo}" --push --pages-branch gh-pages
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
-        if: >-
-          ${{ github.event.inputs.action != 'reupload'
-              || github.event.inputs.chart != 'mcp-library' }}
+        if: ${{ github.event.inputs.action != 'reupload' }}
         with:
           charts_dir: charts
           pages_branch: gh-pages
-          skip_packaging: >-
-            ${{ github.event.inputs.action == 'reupload'
-                && github.event.inputs.chart != 'mcp-library'
-                && 'true' || '' }}
           skip_existing: false
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
