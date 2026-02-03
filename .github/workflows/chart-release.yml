@@ -142,7 +142,7 @@ jobs:
           rm -rf .cr-index
           mkdir -p .cr-index
           cr upload --owner "${owner}" --git-repo "${repo}" --commit "$(git rev-parse HEAD)" --pages-branch gh-pages
-          cr index --owner "${owner}" --repo "${repo}" --push --pages-branch gh-pages
+          cr index --owner "${owner}" --git-repo "${repo}" --push --pages-branch gh-pages
 
       - name: Run chart-releaser
         id: cr
@@ -214,7 +214,7 @@ jobs:
           rm -rf .cr-index
           mkdir -p .cr-index
           cr upload --owner "${owner}" --git-repo "${repo}" --commit "$(git rev-parse HEAD)" --pages-branch gh-pages
-          cr index --owner "${owner}" --repo "${repo}" --push --pages-branch gh-pages
+          cr index --owner "${owner}" --git-repo "${repo}" --push --pages-branch gh-pages
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
