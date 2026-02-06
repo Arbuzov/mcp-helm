@@ -1,3 +1,17 @@
 apiVersion: v1
-entries: {}
-generated: '2026-02-06T08:09:21.080636577Z'
+entries:
+  mcp-library:
+  - apiVersion: v2
+    appVersion: "1.0"
+    created: "2026-02-06T08:12:05.205553308Z"
+    description: Common helper templates for MCP charts
+    digest: 5389d18ae08af479b7d6095e1220e52fa8154335f770c1f560e453a30ff3b082
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    maintainers:
+    - name: Open WebUI
+    name: mcp-library
+    type: library
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-library-0.1.4/mcp-library-0.1.4.tgz
+    version: 0.1.4
+generated: "2026-02-06T08:12:05.205562294Z"
