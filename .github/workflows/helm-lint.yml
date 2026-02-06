@@ -46,7 +46,10 @@ jobs:
 
       - name: Install kubeval
         run: |
-          curl -L https://github.com/instrumenta/kubeval/releases/download/v0.16.1/kubeval-linux-amd64.tar.gz -o kubeval.tar.gz
+          KUBEVAL_URL="https://github.com/instrumenta/kubeval"
+          KUBEVAL_URL="${KUBEVAL_URL}/releases/download/v0.16.1"
+          curl -L "${KUBEVAL_URL}/kubeval-linux-amd64.tar.gz" \
+            -o kubeval.tar.gz
           tar xzf kubeval.tar.gz
           sudo install -o root -g root -m 0755 kubeval /usr/local/bin/kubeval
 

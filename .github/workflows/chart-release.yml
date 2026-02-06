@@ -10,7 +10,8 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: Release behavior (release, delete, reupload)
+        description: >-
+          Release behavior (release, delete, reupload)
         type: choice
         options:
           - release
@@ -19,7 +20,7 @@ on:
         default: release
       chart:
         description: >-
-          Chart name for delete/reupload (e.g. mcpo, or all for every chart)
+          Chart name (e.g. mcpo, or all)
         type: choice
         options:
           - all
@@ -36,7 +37,7 @@ on:
         required: false
       version:
         description: >-
-          Chart version for delete/reupload (e.g. 0.3.2, or all for every version)
+          Chart version (e.g. 0.3.2, or all)
         type: string
         required: false
 
@@ -44,56 +45,58 @@ permissions:
   contents: write
 
 jobs:
+  # -----------------------------------------------------------
+  # Delete releases (runs for delete / reupload actions only)
+  # -----------------------------------------------------------
   manage_release:
     runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch'
+      && (github.event.inputs.action == 'delete'
+       || github.event.inputs.action == 'reupload')
     env:
-      ACTION: >-
-        ${{ github.event_name == 'workflow_dispatch'
-            && github.event.inputs.action
-            || 'release' }}
+      ACTION: ${{ github.event.inputs.action }}
       CHART: ${{ github.event.inputs.chart }}
       VERSION: ${{ github.event.inputs.version }}
-    if: >-
-      ${{ github.event_name == 'workflow_dispatch'
-          && (github.event.inputs.action == 'delete'
-          || github.event.inputs.action == 'reupload') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Validate inputs
-        if: ${{ env.ACTION == 'delete' || env.ACTION == 'reupload' }}
         run: |
           if [[ -z "${CHART}" || -z "${VERSION}" ]]; then
-            echo "chart and version inputs are required for ${ACTION}."
+            echo "::error::chart and version are required."
             exit 1
           fi
-          if [[ "${CHART}" == "all" && "${VERSION}" != "all" ]]; then
-            echo "version must be 'all' when chart is 'all'."
+          if [[ "${CHART}" == "all" \
+                && "${VERSION}" != "all" ]]; then
+            echo "::error::version must be 'all' when chart is 'all'."
             exit 1
           fi
 
       - name: Install PyYAML
-        if: ${{ env.ACTION == 'delete' || env.ACTION == 'reupload' }}
-        run: python -m pip install --upgrade pyyaml
+        run: python3 -m pip install --upgrade pyyaml
 
-      - name: Delete GitHub release and gh-pages artifacts
-        if: ${{ env.ACTION == 'delete' || env.ACTION == 'reupload' }}
+      - name: Delete releases and gh-pages artifacts
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           bash "${GITHUB_WORKSPACE}/.github/scripts/manage_release.sh"
 
+  # -----------------------------------------------------------
+  # Release mcp-library first (it is a dependency for others)
+  # -----------------------------------------------------------
   release_library:
     needs: manage_release
     if: >-
-      ${{ always()
-          && (github.event_name == 'push'
-          || github.event.inputs.action == 'release'
-          || github.event.inputs.action == 'reupload') }}
+      always()
+      && needs.manage_release.result != 'failure'
+      && (github.event_name == 'push'
+       || github.event.inputs.action == 'release'
+       || (github.event.inputs.action == 'reupload'
+           && (github.event.inputs.chart == 'all'
+            || github.event.inputs.chart == 'mcp-library')))
     runs-on: ubuntu-latest
-    outputs:
-      library_version: ${{ steps.cr.outputs.chart_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -103,67 +106,72 @@ jobs:
       - name: Configure Git author
         run: |
           git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config user.email \
+            "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Wipe all charts except mcp-library
         run: |
-          find charts -mindepth 1 -maxdepth 1 ! -name 'mcp-library' -exec rm -rf {} +
+          find charts -mindepth 1 -maxdepth 1 \
+            ! -name 'mcp-library' -exec rm -rf {} +
 
-      - name: Install chart-releaser (reupload)
-        if: >-
-          ${{ github.event.inputs.action == 'reupload'
-              && (github.event.inputs.chart == 'all'
-              || github.event.inputs.chart == 'mcp-library') }}
+      # ---- reupload path ----
+      - name: Install chart-releaser
+        if: github.event.inputs.action == 'reupload'
         uses: helm/chart-releaser-action@v1.7.0
         with:
           install_only: true
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Package charts (reupload)
-        if: >-
-          ${{ github.event.inputs.action == 'reupload'
-              && (github.event.inputs.chart == 'all'
-              || github.event.inputs.chart == 'mcp-library') }}
+      - name: Package library chart
+        if: github.event.inputs.action == 'reupload'
         run: |
-          bash "${GITHUB_WORKSPACE}/.github/scripts/package_charts.sh" \
-            "charts" "${{ github.event.inputs.chart }}"
+          bash "${{ github.workspace }}/.github/scripts/package_charts.sh" \
+            "charts" "mcp-library"
 
-      - name: Run chart-releaser (reupload)
-        if: >-
-          ${{ github.event.inputs.action == 'reupload'
-              && (github.event.inputs.chart == 'all'
-              || github.event.inputs.chart == 'mcp-library') }}
+      - name: Upload and index library chart
+        if: github.event.inputs.action == 'reupload'
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           owner="${GITHUB_REPOSITORY%%/*}"
           repo="${GITHUB_REPOSITORY##*/}"
-          rm -rf .cr-index
-          mkdir -p .cr-index
-          cr upload --owner "${owner}" --git-repo "${repo}" --commit "$(git rev-parse HEAD)" --pages-branch gh-pages
-          cr index --owner "${owner}" --git-repo "${repo}" --push --pages-branch gh-pages
+          rm -rf .cr-index && mkdir -p .cr-index
+          cr upload \
+            --owner "${owner}" \
+            --git-repo "${repo}" \
+            --commit "$(git rev-parse HEAD)" \
+            --skip-existing \
+            --pages-branch gh-pages
+          cr index \
+            --owner "${owner}" \
+            --git-repo "${repo}" \
+            --push \
+            --pages-branch gh-pages
 
+      # ---- normal release path ----
       - name: Run chart-releaser
-        id: cr
+        if: github.event.inputs.action != 'reupload'
         uses: helm/chart-releaser-action@v1.7.0
-        if: ${{ github.event.inputs.action != 'reupload' }}
         with:
           charts_dir: charts
           pages_branch: gh-pages
-          skip_existing: false
+          skip_existing: true
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Show released library version
-        run: echo "Released mcp-library version ${{ steps.cr.outputs.chart_version }}"
+  # -----------------------------------------------------------
+  # Release every other chart
+  # -----------------------------------------------------------
   release_all:
     needs: release_library
     if: >-
-      ${{ always()
-          && (github.event_name == 'push'
-          || github.event.inputs.action == 'release'
-          || github.event.inputs.action == 'reupload') }}
+      always()
+      && needs.release_library.result != 'failure'
+      && (github.event_name == 'push'
+       || github.event.inputs.action == 'release'
+       || (github.event.inputs.action == 'reupload'
+           && github.event.inputs.chart != 'mcp-library'))
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -174,54 +182,60 @@ jobs:
       - name: Configure Git author
         run: |
           git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config user.email \
+            "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Wipe mcp-library
         run: rm -rf charts/mcp-library
 
       - name: Add MCP chart repository
         run: |
-          helm repo add mcp https://arbuzov.github.io/mcp-helm/
+          helm repo add mcp \
+            https://arbuzov.github.io/mcp-helm/
           helm repo update
 
-      - name: Install chart-releaser (reupload)
-        if: >-
-          ${{ github.event.inputs.action == 'reupload'
-              && github.event.inputs.chart != 'mcp-library' }}
+      # ---- reupload path ----
+      - name: Install chart-releaser
+        if: github.event.inputs.action == 'reupload'
         uses: helm/chart-releaser-action@v1.7.0
         with:
           install_only: true
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Package charts (reupload)
-        if: >-
-          ${{ github.event.inputs.action == 'reupload'
-              && github.event.inputs.chart != 'mcp-library' }}
+      - name: Package charts
+        if: github.event.inputs.action == 'reupload'
         run: |
-          bash "${GITHUB_WORKSPACE}/.github/scripts/package_charts.sh" \
+          bash "${{ github.workspace }}/.github/scripts/package_charts.sh" \
             "charts" "${{ github.event.inputs.chart }}"
 
-      - name: Run chart-releaser (reupload)
-        if: >-
-          ${{ github.event.inputs.action == 'reupload'
-              && github.event.inputs.chart != 'mcp-library' }}
+      - name: Upload and index charts
+        if: github.event.inputs.action == 'reupload'
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           owner="${GITHUB_REPOSITORY%%/*}"
           repo="${GITHUB_REPOSITORY##*/}"
-          rm -rf .cr-index
-          mkdir -p .cr-index
-          cr upload --owner "${owner}" --git-repo "${repo}" --commit "$(git rev-parse HEAD)" --pages-branch gh-pages
-          cr index --owner "${owner}" --git-repo "${repo}" --push --pages-branch gh-pages
+          rm -rf .cr-index && mkdir -p .cr-index
+          cr upload \
+            --owner "${owner}" \
+            --git-repo "${repo}" \
+            --commit "$(git rev-parse HEAD)" \
+            --skip-existing \
+            --pages-branch gh-pages
+          cr index \
+            --owner "${owner}" \
+            --git-repo "${repo}" \
+            --push \
+            --pages-branch gh-pages
 
+      # ---- normal release path ----
       - name: Run chart-releaser
+        if: github.event.inputs.action != 'reupload'
         uses: helm/chart-releaser-action@v1.7.0
-        if: ${{ github.event.inputs.action != 'reupload' }}
         with:
           charts_dir: charts
           pages_branch: gh-pages
-          skip_existing: false
+          skip_existing: true
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}

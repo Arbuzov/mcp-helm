@@ -5,7 +5,7 @@ repo="${GITHUB_REPOSITORY}"
 token="${GH_TOKEN:-${GITHUB_TOKEN:-}}"
 auth_header=""
 if [[ -n "${token}" ]]; then
-  auth_header="AUTHORIZATION: basic $(printf 'x-access-token:%s' "${token}" | base64)"
+  auth_header="AUTHORIZATION: basic $(printf 'x-access-token:%s' "${token}" | base64 -w0)"
 fi
 
 if [[ -z "${CHART:-}" || -z "${VERSION:-}" ]]; then
