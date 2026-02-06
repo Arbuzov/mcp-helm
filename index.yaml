@@ -1,5 +1,102 @@
 apiVersion: v1
 entries:
+  claude-code-api:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-02-06T08:12:21.966210236Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying the Claude Code OpenAI-compatible API
+      gateway
+    digest: e33c87b164c99852b686664218436061e98f7d9ada30bbdb89972690d7cb397b
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    name: claude-code-api
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/claude-code-api-0.1.1/claude-code-api-0.1.1.tgz
+    version: 0.1.1
+  copilot-api:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-02-06T08:12:22.12992901Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying the Copilot API proxy server
+    digest: 56329a52c0daf5520a3f8a51d6373db46c7c7966030368900609da8b90c4a363
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    name: copilot-api
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/copilot-api-0.1.1/copilot-api-0.1.1.tgz
+    version: 0.1.1
+  mcp-atlassian:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-02-06T08:12:22.301070883Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for Kubernetes
+    digest: 346f907e9e418339dd7a5f23f2ab853c79bd8481dd772063be1fc0fbe050d23a
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    name: mcp-atlassian
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-atlassian-0.2.28/mcp-atlassian-0.2.28.tgz
+    version: 0.2.28
+  mcp-gitlab:
+  - apiVersion: v2
+    appVersion: 2.0.7
+    created: "2026-02-06T08:12:22.464088628Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying GitLab MCP server
+    digest: 6d83841c7f6d15d02893c18c647f5096040ceb28e8b5f6fa799c41429fe05dad
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    name: mcp-gitlab
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-gitlab-0.3.3/mcp-gitlab-0.3.3.tgz
+    version: 0.3.3
+  mcp-homeassistant:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-02-06T08:12:22.628322079Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying Home Assistant MCP server
+    digest: d6788dbb47748a537761ee0d2c71375db99862251af34082eb869d9492a4dec3
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    name: mcp-homeassistant
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-homeassistant-0.2.4/mcp-homeassistant-0.2.4.tgz
+    version: 0.2.4
+  mcp-kubernetes:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-02-06T08:12:22.804322527Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying the MCP server
+    digest: 5c49f7fcaf3bb4c07c81982fac1148f268140ce03dde8b58506d007638c6f343
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    name: mcp-kubernetes
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-kubernetes-0.2.7/mcp-kubernetes-0.2.7.tgz
+    version: 0.2.7
   mcp-library:
   - apiVersion: v2
     appVersion: "1.0"
@@ -14,4 +111,58 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-library-0.1.4/mcp-library-0.1.4.tgz
     version: 0.1.4
-generated: "2026-02-06T08:12:05.205562294Z"
+  mcp-playwright:
+  - apiVersion: v2
+    appVersion: v0.0.43
+    created: "2026-02-06T08:12:23.004741995Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying the Playwright MCP server
+    digest: 29585d6d2c88b4f687c44c54e2d873b23e42cbe59a9c62e2e12a80a32efd0bb4
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    name: mcp-playwright
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcp-playwright-0.1.1/mcp-playwright-0.1.1.tgz
+    version: 0.1.1
+  mcpo:
+  - apiVersion: v2
+    appVersion: main
+    created: "2026-02-06T08:12:23.168146705Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying the mcpo proxy server
+    digest: f37cd86ee22699771b65b41337f252757bfa86ce0439e9bd426057133107511d
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    name: mcpo
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcpo-0.2.6/mcpo-0.2.6.tgz
+    version: 0.2.6
+  search:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-02-06T08:12:23.341524321Z"
+    description: Deploys the MCP search crawler together with FlareSolverr support
+      services.
+    digest: 453ec9aafb0cae11cb331982a3cef876fa1dbe80608b52e2b91fa44d4ac0b7a9
+    home: https://example.com
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    keywords:
+    - search
+    - crawler
+    - flaresolverr
+    - helm
+    - chart
+    name: search
+    sources:
+    - https://github.com/example/search-helm-chart
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/search-0.1.3/search-0.1.3.tgz
+    version: 0.1.3
+generated: "2026-02-06T08:12:23.341530813Z"
