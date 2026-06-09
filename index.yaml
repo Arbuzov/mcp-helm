@@ -3,7 +3,7 @@ entries:
   claude-code-api:
   - apiVersion: v2
     appVersion: 0.1.0
-    created: '2026-02-06T08:12:21.966210236Z'
+    created: "2026-02-06T08:12:21.966210236Z"
     dependencies:
     - name: mcp-library
       repository: https://arbuzov.github.io/mcp-helm/
@@ -21,7 +21,7 @@ entries:
   mcp-atlassian:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: '2026-02-06T08:12:22.301070883Z'
+    created: "2026-02-06T08:12:22.301070883Z"
     dependencies:
     - name: mcp-library
       repository: https://arbuzov.github.io/mcp-helm/
@@ -37,7 +37,7 @@ entries:
   mcp-gitlab:
   - apiVersion: v2
     appVersion: 2.0.7
-    created: '2026-02-06T08:12:22.464088628Z'
+    created: "2026-02-06T08:12:22.464088628Z"
     dependencies:
     - name: mcp-library
       repository: https://arbuzov.github.io/mcp-helm/
@@ -53,7 +53,7 @@ entries:
   mcp-homeassistant:
   - apiVersion: v2
     appVersion: latest
-    created: '2026-02-06T08:12:22.628322079Z'
+    created: "2026-02-06T08:12:22.628322079Z"
     dependencies:
     - name: mcp-library
       repository: https://arbuzov.github.io/mcp-helm/
@@ -69,7 +69,7 @@ entries:
   mcp-kubernetes:
   - apiVersion: v2
     appVersion: latest
-    created: '2026-02-06T08:12:22.804322527Z'
+    created: "2026-02-06T08:12:22.804322527Z"
     dependencies:
     - name: mcp-library
       repository: https://arbuzov.github.io/mcp-helm/
@@ -84,8 +84,8 @@ entries:
     version: 0.2.7
   mcp-library:
   - apiVersion: v2
-    appVersion: '1.0'
-    created: '2026-02-06T08:12:05.205553308Z'
+    appVersion: "1.0"
+    created: "2026-02-06T08:12:05.205553308Z"
     description: Common helper templates for MCP charts
     digest: 5389d18ae08af479b7d6095e1220e52fa8154335f770c1f560e453a30ff3b082
     icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
@@ -99,7 +99,7 @@ entries:
   mcp-playwright:
   - apiVersion: v2
     appVersion: v0.0.43
-    created: '2026-02-06T08:12:23.004741995Z'
+    created: "2026-02-06T08:12:23.004741995Z"
     dependencies:
     - name: mcp-library
       repository: https://arbuzov.github.io/mcp-helm/
@@ -115,7 +115,22 @@ entries:
   mcpo:
   - apiVersion: v2
     appVersion: main
-    created: '2026-02-06T08:12:23.168146705Z'
+    created: "2026-06-09T18:13:32.580541653Z"
+    dependencies:
+    - name: mcp-library
+      repository: https://arbuzov.github.io/mcp-helm/
+      version: 0.1.4
+    description: A Helm chart for deploying the mcpo proxy server
+    digest: 7a327b0924b49cae8d5a5e9ac0a693ccff3cbbc477b1c31f7823707c93ca816b
+    icon: https://raw.githubusercontent.com/modelcontextprotocol/docs/main/logo/light.svg
+    name: mcpo
+    type: application
+    urls:
+    - https://github.com/Arbuzov/mcp-helm/releases/download/mcpo-0.2.7/mcpo-0.2.7.tgz
+    version: 0.2.7
+  - apiVersion: v2
+    appVersion: main
+    created: "2026-02-06T08:12:23.168146705Z"
     dependencies:
     - name: mcp-library
       repository: https://arbuzov.github.io/mcp-helm/
@@ -131,7 +146,7 @@ entries:
   search:
   - apiVersion: v2
     appVersion: latest
-    created: '2026-02-06T08:12:23.341524321Z'
+    created: "2026-02-06T08:12:23.341524321Z"
     description: Deploys the MCP search crawler together with FlareSolverr support
       services.
     digest: 453ec9aafb0cae11cb331982a3cef876fa1dbe80608b52e2b91fa44d4ac0b7a9
@@ -150,4 +165,4 @@ entries:
     urls:
     - https://github.com/Arbuzov/mcp-helm/releases/download/search-0.1.3/search-0.1.3.tgz
     version: 0.1.3
-generated: '2026-02-06T08:12:23.341530813Z'
+generated: "2026-06-09T18:13:32.580550846Z"
