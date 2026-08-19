@@ -81,20 +81,36 @@ spec:
             - name: config
               mountPath: /opt/mcpo/config.json
               subPath: config.json
+          # /openapi.json, not /healthz: the image serves no /healthz - it answers 404
+          # both at the root and behind the --path-prefix, so probing it never passes.
+          # /openapi.json is served by FastAPI itself, so it holds across image versions.
+          # startupProbe carries the boot: uvicorn does not bind the port until its
+          # lifespan hook has dialled every configured MCP server one by one, which on
+          # arm64 takes ~1 min, and without this liveness starts counting during that.
+          startupProbe:
+            httpGet:
+              path: /openapi.json
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
           livenessProbe:
             httpGet:
-              path: /healthz
+              path: /openapi.json
               port: http
               scheme: HTTP
             initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              path: /healthz
+              path: /openapi.json
               port: http
               scheme: HTTP
             initialDelaySeconds: 5
             periodSeconds: 5
+            timeoutSeconds: 5
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
